@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthContext";
 import AuthMinimalHeader from "@/components/auth/AuthMinimalHeader";
@@ -11,6 +11,23 @@ import { ApiError, loginCustomer } from "@/lib/api";
 import { createRipple } from "@/lib/ripple";
 
 export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <>
+          <AuthMinimalHeader backHref="/shop" backLabel="Back to Shop" />
+          <main className="min-h-[calc(100vh-64px)] lg:min-h-[calc(100vh-80px)] flex items-center justify-center px-5 py-16">
+            <p className="text-center text-black/40 text-sm">Loading…</p>
+          </main>
+        </>
+      }
+    >
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading, setSession } = useAuth();

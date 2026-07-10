@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { Suspense, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import AuthMinimalHeader from "@/components/auth/AuthMinimalHeader";
 import PasswordField from "@/components/auth/PasswordField";
@@ -9,6 +9,23 @@ import { ApiError, resetPassword } from "@/lib/api";
 import { createRipple } from "@/lib/ripple";
 
 export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <>
+          <AuthMinimalHeader backHref="/login" backLabel="Back to Sign In" />
+          <main className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] flex items-center justify-center px-5 py-16">
+            <p className="text-center text-black/40 text-sm">Loading…</p>
+          </main>
+        </>
+      }
+    >
+      <ResetPasswordContent />
+    </Suspense>
+  );
+}
+
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
   const email = searchParams.get("email") ?? "";

@@ -6,6 +6,7 @@ import CartToast from "@/components/cart/CartToast";
 import { WishlistProvider } from "@/components/wishlist/WishlistContext";
 import { QuickViewProvider } from "@/components/shop/QuickViewContext";
 import QuickViewModal from "@/components/shop/QuickViewModal";
+import { getSiteSettings } from "@/lib/api";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -20,14 +21,19 @@ const manrope = Manrope({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  title: {
-    default: "Rinmora — Elegance You Can Carry",
-    template: "%s",
-  },
-  description: "Rinmora — Premium handbags designed for confident women.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings().catch(() => null);
+
+  return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    title: {
+      default: "Rinmora — Elegance You Can Carry",
+      template: "%s",
+    },
+    description: "Rinmora — Premium handbags designed for confident women.",
+    icons: settings?.branding.favicon_url ? { icon: settings.branding.favicon_url } : undefined,
+  };
+}
 
 export default function RootLayout({
   children,

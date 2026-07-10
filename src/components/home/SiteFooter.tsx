@@ -1,36 +1,55 @@
-export default function SiteFooter() {
+import type { SocialLink } from "@/types/cms";
+
+const SOCIAL_ICONS: Record<SocialLink["platform"], string> = {
+  facebook: "fa-brands fa-facebook-f",
+  instagram: "fa-brands fa-instagram",
+  tiktok: "fa-brands fa-tiktok",
+  pinterest: "fa-brands fa-pinterest",
+  youtube: "fa-brands fa-youtube",
+  linkedin: "fa-brands fa-linkedin-in",
+  twitter: "fa-brands fa-x-twitter",
+  whatsapp: "fa-brands fa-whatsapp",
+};
+
+const FALLBACK_SOCIAL: SocialLink[] = [
+  { platform: "instagram", url: "#" },
+  { platform: "facebook", url: "#" },
+  { platform: "tiktok", url: "#" },
+];
+
+export default function SiteFooter({
+  socialLinks,
+  logoUrl,
+}: {
+  socialLinks?: SocialLink[];
+  logoUrl?: string | null;
+}) {
+  const links = socialLinks && socialLinks.length > 0 ? socialLinks : FALLBACK_SOCIAL;
+  const logoSrc = logoUrl || "/logo-01.png";
+
   return (
     <footer className="border-t border-black/5">
       <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 py-14 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2 md:col-span-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-01.png" alt="Rinmora" className="h-12 w-auto mb-4" />
+            <img src={logoSrc} alt="Rinmora" className="h-12 w-auto mb-4" />
             <p className="text-black/50 text-sm max-w-xs">
               Premium handbags designed for confident women. Elegance you can carry, every day.
             </p>
             <div className="flex items-center gap-3 mt-6">
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="w-10 h-10 rounded-full bg-black/[0.04] grid place-items-center hover:bg-primary transition"
-              >
-                <i className="fa-brands fa-instagram" />
-              </a>
-              <a
-                href="#"
-                aria-label="Facebook"
-                className="w-10 h-10 rounded-full bg-black/[0.04] grid place-items-center hover:bg-primary transition"
-              >
-                <i className="fa-brands fa-facebook-f" />
-              </a>
-              <a
-                href="#"
-                aria-label="TikTok"
-                className="w-10 h-10 rounded-full bg-black/[0.04] grid place-items-center hover:bg-primary transition"
-              >
-                <i className="fa-brands fa-tiktok" />
-              </a>
+              {links.map((link) => (
+                <a
+                  key={link.platform}
+                  href={link.url}
+                  target={link.url === "#" ? undefined : "_blank"}
+                  rel={link.url === "#" ? undefined : "noopener noreferrer"}
+                  aria-label={link.platform}
+                  className="w-10 h-10 rounded-full bg-black/[0.04] grid place-items-center hover:bg-primary transition"
+                >
+                  <i className={SOCIAL_ICONS[link.platform]} />
+                </a>
+              ))}
             </div>
           </div>
 

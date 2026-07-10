@@ -14,8 +14,9 @@ const NAV_LINKS = [
   { href: "/about", label: "About" },
 ];
 
-export default function SiteHeader() {
+export default function SiteHeader({ logoUrl }: { logoUrl?: string | null }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const logoSrc = logoUrl || "/logo-01.png";
   const { user, logout } = useAuth();
   const { totalCount: cartCount } = useCart();
   const { items: wishlistItems } = useWishlist();
@@ -47,7 +48,7 @@ export default function SiteHeader() {
 
           <Link href="/" className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 select-none">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-01.png" alt="Rinmora" className="h-14 md:h-20 w-auto" />
+            <img src={logoSrc} alt="Rinmora" className="h-14 md:h-20 w-auto" />
           </Link>
 
           <div className="flex items-center gap-1 md:gap-2">
@@ -97,7 +98,7 @@ export default function SiteHeader() {
         >
           <div className="flex items-center justify-between mb-8">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-01.png" alt="Rinmora" className="h-12 w-auto" />
+            <img src={logoSrc} alt="Rinmora" className="h-12 w-auto" />
             <button
               aria-label="Close menu"
               className="w-10 h-10 grid place-items-center rounded-full hover:bg-black/5 transition"

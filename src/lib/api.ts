@@ -22,7 +22,7 @@ import type {
   ProductDetailPayload,
   ProductFilters,
 } from "@/types/storefront";
-import type { CmsPage, ContactFormPayload, Faq, FaqCategory, SeoMeta } from "@/types/cms";
+import type { CmsPage, ContactFormPayload, Faq, FaqCategory, SeoMeta, SiteSettings } from "@/types/cms";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/rinmora/api";
 
@@ -358,5 +358,10 @@ export async function submitContactForm(payload: ContactFormPayload): Promise<{ 
 
 export async function getSeoMeta(path: string): Promise<SeoMeta | null> {
   const body = await apiGet<{ data: SeoMeta | null }>(`/storefront/seo?path=${encodeURIComponent(path)}`);
+  return body.data;
+}
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  const body = await apiGet<{ data: SiteSettings }>("/storefront/site-settings");
   return body.data;
 }

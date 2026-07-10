@@ -34,3 +34,32 @@ export interface SeoMeta {
   schema_type: string | null;
   schema_json: string | null;
 }
+
+export interface SocialLink {
+  platform: "facebook" | "instagram" | "tiktok" | "pinterest" | "youtube" | "linkedin" | "twitter" | "whatsapp";
+  url: string;
+}
+
+export interface BusinessHours {
+  [day: string]: { open: boolean; from: string; to: string };
+}
+
+export interface SiteSettings {
+  branding: {
+    logo_url: string | null;
+    dark_logo_url: string | null;
+    mobile_logo_url: string | null;
+    favicon_url: string | null;
+  };
+  social: SocialLink[];
+  store: {
+    name: string | null;
+    phone: string | null;
+    email: string | null;
+    support_phone: string | null;
+    support_email: string | null;
+    address: string | null;
+    description: string | null;
+    hours: BusinessHours | null;
+  };
+}

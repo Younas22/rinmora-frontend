@@ -1,15 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getProducts } from "@/lib/api";
+import { getProducts, getSiteSettings } from "@/lib/api";
 import SiteHeader from "@/components/home/SiteHeader";
 import SiteFooter from "@/components/home/SiteFooter";
 
 export default async function NotFound() {
-  const products = await getProducts({ per_page: 4 }).catch(() => null);
+  const [products, settings] = await Promise.all([
+    getProducts({ per_page: 4 }).catch(() => null),
+    getSiteSettings().catch(() => null),
+  ]);
 
   return (
     <>
-    <SiteHeader />
+    <SiteHeader logoUrl={settings?.branding.logo_url} />
     <main className="pt-16 md:pt-20">
       <section className="relative overflow-hidden">
         <div className="absolute -top-16 -right-16 w-64 h-64 md:w-96 md:h-96 rounded-full bg-primary/20 blur-2xl" />
@@ -103,7 +106,7 @@ export default async function NotFound() {
         </div>
       </section>
     </main>
-    <SiteFooter />
+    <SiteFooter socialLinks={settings?.social} logoUrl={settings?.branding.logo_url} />
     </>
   );
 }

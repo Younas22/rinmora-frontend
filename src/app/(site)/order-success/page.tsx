@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthContext";
 import { formatCurrency } from "@/lib/currency";
@@ -10,6 +10,20 @@ import PaymentProofUploader from "@/components/shop/PaymentProofUploader";
 import type { OrderDetail } from "@/types/checkout";
 
 export default function OrderSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="pt-16 md:pt-20">
+          <p className="text-center text-black/40 text-sm py-24">Loading your order…</p>
+        </main>
+      }
+    >
+      <OrderSuccessContent />
+    </Suspense>
+  );
+}
+
+function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const { token } = useAuth();
   const orderNumber = searchParams.get("order") ?? "";
