@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #cfbaa5;
+  --color-primary-dark: #b89e84;
+  --color-ink: #000000;
+
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-poppins);
+  --font-body: var(--font-manrope);
+
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.5rem;
+
+  --shadow-soft: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 10px 40px -12px rgba(0, 0, 0, 0.12);
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.snap-row {
+  scroll-snap-type: x mandatory;
+}
+
+.snap-item {
+  scroll-snap-align: start;
+}
+
+.img-zoom {
+  overflow: hidden;
+}
+
+.img-zoom img {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.img-zoom:hover img {
+  transform: scale(1.08);
+}
+
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple span.ripple {
+  position: absolute;
+  border-radius: 9999px;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  background: rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[x-cloak] {
+  display: none !important;
+}
