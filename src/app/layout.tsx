@@ -35,11 +35,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings().catch(() => null);
+  const theme = settings?.theme;
+
   return (
     <html lang="en" className={`${poppins.variable} ${manrope.variable} scroll-smooth`}>
       <head>
@@ -47,6 +50,9 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         />
+        {theme && (
+          <style>{`:root { --color-primary: ${theme.primary_color} !important; --color-primary-dark: ${theme.primary_dark_color} !important; --color-ink: ${theme.ink_color} !important; }`}</style>
+        )}
       </head>
       <body className="bg-white text-ink antialiased">
         <AuthProvider>

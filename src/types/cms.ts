@@ -52,6 +52,11 @@ export interface SiteSettings {
     favicon_url: string | null;
   };
   social: SocialLink[];
+  theme: {
+    primary_color: string;
+    primary_dark_color: string;
+    ink_color: string;
+  };
   store: {
     name: string | null;
     phone: string | null;

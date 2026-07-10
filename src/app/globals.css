@@ -1,19 +1,29 @@
 @import "tailwindcss";
 
-@theme inline {
+/*
+ * Plain literal values live in a non-inline @theme so Tailwind emits
+ * `var(--color-primary)` etc. in generated utilities (e.g. .bg-primary),
+ * instead of baking the hex value directly into every rule. That indirection
+ * is what lets the root layout override brand colors at request time from
+ * the admin's Theme Colors setting without a rebuild.
+ */
+@theme {
   --color-primary: #cfbaa5;
   --color-primary-dark: #b89e84;
   --color-ink: #000000;
-
-  --font-sans: var(--font-poppins);
-  --font-display: var(--font-poppins);
-  --font-body: var(--font-manrope);
 
   --radius-4xl: 2rem;
   --radius-5xl: 2.5rem;
 
   --shadow-soft: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
   --shadow-card: 0 10px 40px -12px rgba(0, 0, 0, 0.12);
+}
+
+/* These reference next/font's own CSS variables, so they need `inline`. */
+@theme inline {
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-poppins);
+  --font-body: var(--font-manrope);
 }
 
 html {
