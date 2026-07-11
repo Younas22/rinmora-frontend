@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "admin.rinmora.com",
+        pathname: "/public/uploads/**",
+      },
+      {
+        protocol: "https",
         hostname: "picsum.photos",
       },
     ],
