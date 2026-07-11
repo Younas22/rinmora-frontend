@@ -223,8 +223,8 @@ export async function getCheckoutOptions(): Promise<CheckoutOptions> {
   return apiGet<CheckoutOptions>("/storefront/checkout/options");
 }
 
-export async function createOrder(payload: CreateOrderPayload): Promise<CreateOrderResponse> {
-  return apiPost<CreateOrderResponse>("/storefront/orders", payload);
+export async function createOrder(payload: CreateOrderPayload, token?: string): Promise<CreateOrderResponse> {
+  return apiPost<CreateOrderResponse>("/storefront/orders", payload, token);
 }
 
 export async function getOrder(orderNumber: string, email?: string, token?: string): Promise<OrderDetail | null> {

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart/CartContext";
 import { useCurrency } from "@/components/currency/CurrencyContext";
-import { getProducts, validateCart } from "@/lib/api";
+import { getProducts, getSiteSettings, validateCart } from "@/lib/api";
 import ProductCard from "@/components/home/ProductCard";
 import type { Product } from "@/types/storefront";
 
@@ -14,7 +14,19 @@ export default function CartPage() {
   const { formatPrice } = useCurrency();
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<Product[]>([]);
+  const [freeShipping, setFreeShipping] = useState<{ enabled: boolean; threshold: number } | null>(null);
   const hasValidatedRef = useRef(false);
+
+  useEffect(() => {
+    getSiteSettings()
+      .then((settings) =>
+        setFreeShipping({
+          enabled: settings.shipping.free_shipping_enabled,
+          threshold: settings.shipping.free_shipping_threshold,
+        })
+      )
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (hasValidatedRef.current || items.length === 0) return;
@@ -88,6 +100,30 @@ export default function CartPage() {
               <i className="fa-solid fa-circle-info text-primary-dark mr-2" />
               {syncNotice}
             </p>
+          )}
+
+          {freeShipping?.enabled && freeShipping.threshold > 0 && (
+            <div className="mb-6 bg-white rounded-2xl shadow-card px-5 py-4">
+              {subtotal >= freeShipping.threshold ? (
+                <p className="text-sm font-medium text-green-700">
+                  <i className="fa-solid fa-circle-check mr-2" />
+                  You&apos;ve unlocked free shipping!
+                </p>
+              ) : (
+                <>
+                  <p className="text-sm text-black/60 mb-2.5">
+                    Add <span className="font-semibold text-ink">{formatPrice(freeShipping.threshold - subtotal)}</span> more
+                    to get <span className="font-semibold text-ink">free shipping</span>
+                  </p>
+                  <div className="h-2 rounded-full bg-black/5 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-primary-dark transition-all duration-500"
+                      style={{ width: `${Math.min(100, (subtotal / freeShipping.threshold) * 100)}%` }}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
           )}
 
           <div className="lg:grid lg:grid-cols-[1fr_360px] lg:gap-10 lg:items-start">

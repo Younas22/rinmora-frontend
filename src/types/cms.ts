@@ -76,4 +76,8 @@ export interface SiteSettings {
     description: string | null;
     hours: BusinessHours | null;
   };
+  shipping: {
+    free_shipping_enabled: boolean;
+    free_shipping_threshold: number;
+  };
 }

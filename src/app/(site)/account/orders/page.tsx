@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthContext";
-import { getAccountOrders } from "@/lib/api";
+import { ApiError, getAccountOrders } from "@/lib/api";
 import { useCurrency } from "@/components/currency/CurrencyContext";
 import OrderStatusBadge from "@/components/account/OrderStatusBadge";
 import type { OrderDetail } from "@/types/checkout";
@@ -20,20 +20,47 @@ const STATUS_TABS = [
 ];
 
 export default function AccountOrdersPage() {
-  const { token } = useAuth();
+  const { token, loading: authLoading } = useAuth();
   const { formatPrice } = useCurrency();
   const [orders, setOrders] = useState<OrderDetail[] | null>(null);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [status, setStatus] = useState("");
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) return;
-    getAccountOrders(token, { status: status || undefined, page }).then((res) => {
-      setOrders(res.data);
-      setMeta(res.meta);
-    });
-  }, [token, status, page]);
+    if (authLoading) return;
+
+    let cancelled = false;
+
+    (async () => {
+      if (!token) {
+        setLoading(false);
+        setError("Please sign in to view your orders.");
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const res = await getAccountOrders(token, { status: status || undefined, page });
+        if (cancelled) return;
+        setOrders(res.data);
+        setMeta(res.meta);
+      } catch (err) {
+        if (cancelled) return;
+        setError(err instanceof ApiError ? err.message : "Couldn't load your orders. Please try again.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token, authLoading, status, page]);
 
   return (
     <>
@@ -67,7 +94,25 @@ export default function AccountOrdersPage() {
         ))}
       </div>
 
-      {orders && orders.length === 0 && (
+      {loading && <p className="text-center text-black/40 text-sm py-16">Loading orders…</p>}
+
+      {!loading && error && (
+        <section className="max-w-lg mx-auto py-16 text-center fade-up">
+          <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-primary/15 grid place-items-center">
+            <i className="fa-solid fa-triangle-exclamation text-4xl text-primary-dark" />
+          </div>
+          <h2 className="font-display text-xl font-semibold mb-2">Couldn&apos;t Load Orders</h2>
+          <p className="text-black/50 text-sm mb-6">{error}</p>
+          <Link
+            href="/login"
+            className="btn-ripple inline-block bg-primary text-ink font-display font-semibold text-sm uppercase tracking-wide px-8 py-4 rounded-full hover:bg-primary-dark transition"
+          >
+            Sign In
+          </Link>
+        </section>
+      )}
+
+      {!loading && !error && orders && orders.length === 0 && (
         <section className="max-w-lg mx-auto py-16 text-center fade-up">
           <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-primary/15 grid place-items-center">
             <i className="fa-solid fa-box-open text-4xl text-primary-dark" />

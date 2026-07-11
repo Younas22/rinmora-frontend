@@ -159,7 +159,7 @@ export default function CheckoutPage() {
     };
 
     try {
-      const result = await createOrder(payload);
+      const result = await createOrder(payload, token ?? undefined);
 
       if (newsletterOptIn && email) {
         subscribeToNewsletter(email).catch(() => {});
