@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { formatCurrency } from "@/lib/currency";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 import AddToCartButton from "@/components/shared/AddToCartButton";
 import WishlistButton from "@/components/shared/WishlistButton";
 import { useCart } from "@/components/cart/CartContext";
@@ -20,6 +20,7 @@ export default function ProductPurchasePanel({
 }) {
   const router = useRouter();
   const { addItem } = useCart();
+  const { formatPrice } = useCurrency();
 
   const optionGroups = useMemo(() => {
     const groups: Record<string, string[]> = {};
@@ -77,9 +78,9 @@ export default function ProductPurchasePanel({
       </div>
 
       <div className="flex items-center gap-3 mb-4">
-        <span className="font-display text-2xl font-semibold">{formatCurrency(effectivePrice)}</span>
+        <span className="font-display text-2xl font-semibold">{formatPrice(effectivePrice)}</span>
         {product.compare_at_price && product.compare_at_price > effectivePrice && (
-          <span className="text-black/35 text-base line-through">{formatCurrency(product.compare_at_price)}</span>
+          <span className="text-black/35 text-base line-through">{formatPrice(product.compare_at_price)}</span>
         )}
         {product.discount_percent && (
           <span className="bg-ink text-white text-[10px] font-display font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full">

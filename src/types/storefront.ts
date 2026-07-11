@@ -29,8 +29,32 @@ export interface Review {
   rating: number;
   title: string | null;
   body: string;
+  photo_url: string | null;
   product: { id: number; name: string; slug: string } | null;
   created_at: string | null;
+}
+
+export interface MyReview {
+  id: number;
+  rating: number;
+  title: string | null;
+  body: string;
+  photo_url: string | null;
+  status: "pending" | "approved" | "rejected" | "reported";
+}
+
+export interface ReviewEligibility {
+  can_review: boolean;
+  existing_review: MyReview | null;
+}
+
+export interface ReviewSubmissionPayload {
+  product_id: number;
+  rating: number;
+  title?: string;
+  body: string;
+  photo?: File;
+  remove_photo?: boolean;
 }
 
 export interface ReelProduct {

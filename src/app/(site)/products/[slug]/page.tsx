@@ -5,6 +5,7 @@ import { getProductBySlug } from "@/lib/api";
 import ProductGallery from "@/components/shop/ProductGallery";
 import ProductPurchasePanel from "@/components/shop/ProductPurchasePanel";
 import ProductReviews from "@/components/shop/ProductReviews";
+import WriteReviewForm from "@/components/shop/WriteReviewForm";
 import ProductCard from "@/components/home/ProductCard";
 
 export async function generateMetadata({
@@ -82,6 +83,9 @@ export default async function ProductDetailPage({
 
       <section id="reviews" className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 py-10 md:py-14 border-t border-black/5">
         <h2 className="font-display text-xl md:text-2xl font-semibold mb-8">Customer Reviews</h2>
+        <div className="mb-10">
+          <WriteReviewForm productId={product.id} slug={product.slug} />
+        </div>
         <ProductReviews reviews={reviews} slug={product.slug} />
       </section>
 

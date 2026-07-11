@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthContext";
 import { getAccountOrder } from "@/lib/api";
-import { formatCurrency } from "@/lib/currency";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 import OrderStatusBadge from "@/components/account/OrderStatusBadge";
 import PaymentProofUploader from "@/components/shop/PaymentProofUploader";
 import type { OrderDetail } from "@/types/checkout";
@@ -14,6 +14,7 @@ import type { OrderDetail } from "@/types/checkout";
 export default function AccountOrderDetailPage() {
   const params = useParams<{ number: string }>();
   const { token } = useAuth();
+  const { formatPrice } = useCurrency();
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -99,7 +100,15 @@ export default function AccountOrderDetailPage() {
                     {item.variant_label && <p className="text-black/45 text-xs">{item.variant_label}</p>}
                   </div>
                   <p className="text-black/50 text-sm shrink-0">Qty {item.quantity}</p>
-                  <p className="text-sm font-semibold shrink-0 w-20 text-right">{formatCurrency(item.line_total)}</p>
+                  <p className="text-sm font-semibold shrink-0 w-20 text-right">{formatPrice(item.line_total)}</p>
+                  {order.status === "delivered" && item.product_slug && (
+                    <Link
+                      href={`/products/${item.product_slug}#reviews`}
+                      className="text-xs font-display font-semibold uppercase tracking-wide shrink-0 whitespace-nowrap px-3 py-2 rounded-full border border-black/10 hover:bg-black/5 transition"
+                    >
+                      {item.already_reviewed ? "Edit Review" : "Rate this product"}
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>
@@ -170,15 +179,15 @@ export default function AccountOrderDetailPage() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-black/50">Subtotal</span>
-                <span>{formatCurrency(order.subtotal)}</span>
+                <span>{formatPrice(order.subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-black/50">Shipping</span>
-                <span>{formatCurrency(order.shipping_amount)}</span>
+                <span>{formatPrice(order.shipping_amount)}</span>
               </div>
               <div className="flex justify-between text-base font-bold pt-2 border-t border-black/5">
                 <span>Total</span>
-                <span>{formatCurrency(order.total)}</span>
+                <span>{formatPrice(order.total)}</span>
               </div>
             </div>
             {order.payment && (

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { formatCurrency } from "@/lib/currency";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 import AddToCartButton from "@/components/shared/AddToCartButton";
 import WishlistButton from "@/components/shared/WishlistButton";
 import { useCart } from "@/components/cart/CartContext";
@@ -11,6 +11,7 @@ import type { Product } from "@/types/storefront";
 export default function ProductCard({ product }: { product: Product }) {
   const { open } = useQuickView();
   const { addItem } = useCart();
+  const { formatPrice } = useCurrency();
 
   const badge = product.discount_percent
     ? `-${product.discount_percent}%`
@@ -60,9 +61,9 @@ export default function ProductCard({ product }: { product: Product }) {
           <div className="text-black/40 text-xs">No reviews yet</div>
         )}
         <div className="flex items-baseline gap-2">
-          <span className="font-display font-semibold text-sm md:text-base">{formatCurrency(product.price)}</span>
+          <span className="font-display font-semibold text-sm md:text-base">{formatPrice(product.price)}</span>
           {product.compare_at_price && product.compare_at_price > product.price && (
-            <span className="text-black/40 text-xs line-through">{formatCurrency(product.compare_at_price)}</span>
+            <span className="text-black/40 text-xs line-through">{formatPrice(product.compare_at_price)}</span>
           )}
         </div>
         <AddToCartButton

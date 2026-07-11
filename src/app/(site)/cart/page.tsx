@@ -4,13 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart/CartContext";
-import { formatCurrency } from "@/lib/currency";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 import { getProducts, validateCart } from "@/lib/api";
 import ProductCard from "@/components/home/ProductCard";
 import type { Product } from "@/types/storefront";
 
 export default function CartPage() {
   const { items, removeItem, setQty, subtotal, replaceItems } = useCart();
+  const { formatPrice } = useCurrency();
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const hasValidatedRef = useRef(false);
@@ -155,9 +156,9 @@ export default function CartPage() {
                         </div>
 
                         <div className="text-right">
-                          <p className="font-display font-semibold text-base">{formatCurrency(item.price)}</p>
+                          <p className="font-display font-semibold text-base">{formatPrice(item.price)}</p>
                           {item.compareAtPrice && item.compareAtPrice > item.price && (
-                            <p className="text-black/35 text-xs line-through">{formatCurrency(item.compareAtPrice)}</p>
+                            <p className="text-black/35 text-xs line-through">{formatPrice(item.compareAtPrice)}</p>
                           )}
                         </div>
                       </div>
@@ -181,7 +182,7 @@ export default function CartPage() {
                 <dl className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <dt className="text-black/55">Subtotal</dt>
-                    <dd className="font-medium">{formatCurrency(subtotal)}</dd>
+                    <dd className="font-medium">{formatPrice(subtotal)}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-black/55">Shipping</dt>
@@ -197,7 +198,7 @@ export default function CartPage() {
 
                 <div className="flex justify-between items-baseline mb-6">
                   <span className="font-display font-semibold text-base">Subtotal</span>
-                  <span className="font-display font-semibold text-2xl">{formatCurrency(subtotal)}</span>
+                  <span className="font-display font-semibold text-2xl">{formatPrice(subtotal)}</span>
                 </div>
 
                 <div className="flex flex-col gap-3">

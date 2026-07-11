@@ -44,6 +44,14 @@ export interface BusinessHours {
   [day: string]: { open: boolean; from: string; to: string };
 }
 
+export interface CurrencySettings {
+  code: string;
+  symbol: string;
+  symbol_position: "before" | "after";
+  decimal_places: number;
+  exchange_rate: number;
+}
+
 export interface SiteSettings {
   branding: {
     logo_url: string | null;
@@ -52,6 +60,7 @@ export interface SiteSettings {
     favicon_url: string | null;
   };
   social: SocialLink[];
+  currency: CurrencySettings;
   theme: {
     primary_color: string;
     primary_dark_color: string;

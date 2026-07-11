@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthContext";
 import { useCart } from "@/components/cart/CartContext";
-import { formatCurrency } from "@/lib/currency";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 import { ApiError, createOrder, getAddresses, getCheckoutOptions, subscribeToNewsletter } from "@/lib/api";
 import { createRipple } from "@/lib/ripple";
 import type { Address } from "@/types/account";
@@ -18,6 +18,7 @@ export default function CheckoutPage() {
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<number | "new">("new");
   const { items, hydrated, subtotal, clear } = useCart();
+  const { formatPrice } = useCurrency();
 
   const [options, setOptions] = useState<CheckoutOptions | null>(null);
 
@@ -236,7 +237,7 @@ export default function CheckoutPage() {
                       {item.variant ? `${item.variant.label} · ` : ""}Qty {item.qty}
                     </p>
                   </div>
-                  <p className="font-display text-sm font-semibold shrink-0">{formatCurrency(item.price * item.qty)}</p>
+                  <p className="font-display text-sm font-semibold shrink-0">{formatPrice(item.price * item.qty)}</p>
                 </div>
               ))}
             </div>
@@ -246,11 +247,11 @@ export default function CheckoutPage() {
             <dl className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <dt className="text-black/55">Subtotal</dt>
-                <dd className="font-medium">{formatCurrency(subtotal)}</dd>
+                <dd className="font-medium">{formatPrice(subtotal)}</dd>
               </div>
               <div className="flex justify-between">
                 <dt className="text-black/55">Shipping</dt>
-                <dd className="font-medium">{shippingAmount > 0 ? formatCurrency(shippingAmount) : "Free"}</dd>
+                <dd className="font-medium">{shippingAmount > 0 ? formatPrice(shippingAmount) : "Free"}</dd>
               </div>
             </dl>
 
@@ -258,7 +259,7 @@ export default function CheckoutPage() {
 
             <div className="flex justify-between items-baseline mb-7">
               <span className="font-display font-semibold text-base">Grand Total</span>
-              <span className="font-display font-semibold text-2xl">{formatCurrency(total)}</span>
+              <span className="font-display font-semibold text-2xl">{formatPrice(total)}</span>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs text-black/60 mb-7">
@@ -544,7 +545,7 @@ export default function CheckoutPage() {
                       <p className="text-black/45 text-xs mt-0.5">{method.delivery_time}</p>
                     </div>
                     <span className="font-display text-sm font-semibold shrink-0">
-                      {method.rate > 0 ? formatCurrency(method.rate) : "Free"}
+                      {method.rate > 0 ? formatPrice(method.rate) : "Free"}
                     </span>
                   </div>
                 </label>

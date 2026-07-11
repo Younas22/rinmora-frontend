@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthContext";
 import { useWishlist } from "@/components/wishlist/WishlistContext";
 import { getAccountSummary, getProducts } from "@/lib/api";
-import { formatCurrency } from "@/lib/currency";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 import OrderStatusBadge from "@/components/account/OrderStatusBadge";
 import type { AccountSummary } from "@/types/account";
 import type { Product } from "@/types/storefront";
@@ -14,6 +14,7 @@ import type { Product } from "@/types/storefront";
 export default function AccountDashboardPage() {
   const { user, token } = useAuth();
   const { items: wishlistItems } = useWishlist();
+  const { formatPrice } = useCurrency();
   const [summary, setSummary] = useState<AccountSummary | null>(null);
   const [recommended, setRecommended] = useState<Product[]>([]);
 
@@ -111,7 +112,7 @@ export default function AccountDashboardPage() {
                   #{order.order_number} <OrderStatusBadge status={order.status} />
                 </p>
                 <p className="text-black/45 text-xs mt-1">
-                  {order.items.length} {order.items.length === 1 ? "item" : "items"} · {formatCurrency(order.total)} ·{" "}
+                  {order.items.length} {order.items.length === 1 ? "item" : "items"} · {formatPrice(order.total)} ·{" "}
                   {new Date(order.created_at).toLocaleDateString(undefined, {
                     month: "short",
                     day: "2-digit",
@@ -159,7 +160,7 @@ export default function AccountDashboardPage() {
                 </div>
                 <div className="p-3.5">
                   <p className="font-display text-xs font-medium truncate">{product.name}</p>
-                  <p className="text-black/50 text-xs mt-0.5">{formatCurrency(product.price)}</p>
+                  <p className="text-black/50 text-xs mt-0.5">{formatPrice(product.price)}</p>
                 </div>
               </Link>
             ))}
@@ -217,7 +218,7 @@ export default function AccountDashboardPage() {
                 </div>
                 <div className="p-3.5">
                   <p className="font-display text-xs font-medium truncate">{product.name}</p>
-                  <p className="text-black/50 text-xs mt-0.5">{formatCurrency(product.price)}</p>
+                  <p className="text-black/50 text-xs mt-0.5">{formatPrice(product.price)}</p>
                 </div>
               </Link>
             ))}

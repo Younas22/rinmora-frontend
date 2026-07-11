@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getProducts } from "@/lib/api";
 import ShopFilterBar from "@/components/shop/ShopFilterBar";
+import SortSelect from "@/components/shop/SortSelect";
 import Pagination from "@/components/shop/Pagination";
 import ProductCard from "@/components/home/ProductCard";
 import type { ProductSort } from "@/types/storefront";
@@ -23,14 +24,18 @@ export default async function SearchPage({
   const q = typeof params.q === "string" ? params.q : "";
   const sortParam = typeof params.sort === "string" ? params.sort : undefined;
   const sort: ProductSort = SORT_VALUES.includes(sortParam as ProductSort) ? (sortParam as ProductSort) : "latest";
+  const minPrice = typeof params.min_price === "string" ? Number(params.min_price) : undefined;
+  const maxPrice = typeof params.max_price === "string" ? Number(params.max_price) : undefined;
   const page = typeof params.page === "string" ? Math.max(1, Number(params.page) || 1) : 1;
 
-  const products = q ? await getProducts({ q, sort, page, per_page: 12 }) : null;
+  const products = q ? await getProducts({ q, sort, min_price: minPrice, max_price: maxPrice, page, per_page: 12 }) : null;
 
   const buildHref = (targetPage: number) => {
     const p = new URLSearchParams();
     p.set("q", q);
     if (sort !== "latest") p.set("sort", sort);
+    if (minPrice !== undefined) p.set("min_price", String(minPrice));
+    if (maxPrice !== undefined) p.set("max_price", String(maxPrice));
     if (targetPage > 1) p.set("page", String(targetPage));
     return `/search?${p.toString()}`;
   };
@@ -97,7 +102,10 @@ export default async function SearchPage({
               Showing <span className="font-semibold text-ink">{products.meta.total} results</span> for &quot;
               <span className="font-semibold text-ink">{q}</span>&quot;
             </p>
-            <ShopFilterBar basePath="/search" categories={[]} />
+            <div className="flex items-center gap-3">
+              <ShopFilterBar basePath="/search" />
+              <SortSelect basePath="/search" />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-7">

@@ -84,11 +84,13 @@ export interface OrderDetail {
     product_id: number | null;
     variant_id: number | null;
     product_name: string;
+    product_slug: string | null;
     variant_label: string | null;
     image_url: string | null;
     quantity: number;
     unit_price: number;
     line_total: number;
+    already_reviewed: boolean;
   }[];
   events?: {
     title: string;

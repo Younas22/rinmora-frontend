@@ -1,38 +1,44 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { Category } from "@/types/storefront";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 
-const PRICE_RANGES = [
-  { key: "any", label: "Price: Any" },
-  { key: "0-50", label: "Under $50" },
-  { key: "50-100", label: "$50 – $100" },
-  { key: "100-200", label: "$100 – $200" },
-  { key: "200-", label: "$200+" },
-];
+// Base-currency bounds for the slider; only the label is converted to the
+// active display currency. The API filter params stay in base currency.
+const PRICE_MIN = 0;
+const PRICE_MAX = 1000;
+const PRICE_STEP = 10;
 
-const SORT_OPTIONS = [
-  { key: "latest", label: "Sort: Featured" },
-  { key: "price_asc", label: "Price: Low to High" },
-  { key: "price_desc", label: "Price: High to Low" },
-  { key: "popular", label: "Best Rating" },
-];
-
-export default function ShopFilterBar({ basePath, categories }: { basePath: string; categories: Category[] }) {
+export default function ShopFilterBar({ basePath }: { basePath: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { formatPrice } = useCurrency();
 
-  const currentCategory = searchParams.get("category") ?? "";
-  const currentSort = searchParams.get("sort") ?? "latest";
-  const minPrice = searchParams.get("min_price");
-  const maxPrice = searchParams.get("max_price");
+  const urlMinPrice = searchParams.get("min_price");
+  const urlMaxPrice = searchParams.get("max_price");
+  const urlMin = urlMinPrice ? Number(urlMinPrice) : PRICE_MIN;
+  const urlMax = urlMaxPrice ? Number(urlMaxPrice) : PRICE_MAX;
 
-  const currentPriceKey =
-    PRICE_RANGES.find((r) => {
-      if (r.key === "any") return !minPrice && !maxPrice;
-      const [min, max] = r.key.split("-");
-      return (min ? minPrice === min : !minPrice) && (max ? maxPrice === max : !maxPrice);
-    })?.key ?? "any";
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [draftMin, setDraftMin] = useState(urlMin);
+  const [draftMax, setDraftMax] = useState(urlMax);
+
+  const openPanel = () => {
+    setDraftMin(urlMin);
+    setDraftMax(urlMax);
+    setPanelOpen(true);
+  };
+
+  useEffect(() => {
+    if (!panelOpen) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [panelOpen]);
+
+  const priceFilterActive = urlMin > PRICE_MIN || urlMax < PRICE_MAX;
 
   const navigate = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -48,76 +54,131 @@ export default function ShopFilterBar({ basePath, categories }: { basePath: stri
     router.push(`${basePath}${qs ? `?${qs}` : ""}`);
   };
 
-  const handlePriceChange = (key: string) => {
-    if (key === "any") {
-      navigate({ min_price: null, max_price: null });
-      return;
-    }
-    const [min, max] = key.split("-");
-    navigate({ min_price: min || null, max_price: max || null });
+  const handleMinChange = (value: number) => {
+    setDraftMin(Math.min(value, draftMax - PRICE_STEP));
   };
 
-  const hasActiveFilters = Boolean(currentCategory) || currentPriceKey !== "any" || currentSort !== "latest";
+  const handleMaxChange = (value: number) => {
+    setDraftMax(Math.max(value, draftMin + PRICE_STEP));
+  };
+
+  const applyPriceFilter = () => {
+    navigate({
+      min_price: draftMin > PRICE_MIN ? String(draftMin) : null,
+      max_price: draftMax < PRICE_MAX ? String(draftMax) : null,
+    });
+    setPanelOpen(false);
+  };
+
+  const clearPriceFilter = () => {
+    setDraftMin(PRICE_MIN);
+    setDraftMax(PRICE_MAX);
+    navigate({ min_price: null, max_price: null });
+    setPanelOpen(false);
+  };
+
+  const minPercent = ((draftMin - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100;
+  const maxPercent = ((draftMax - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100;
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <div className="relative">
-        <select
-          aria-label="Filter by category"
-          value={currentCategory}
-          onChange={(e) => navigate({ category: e.target.value || null })}
-          className="appearance-none border border-black/10 rounded-full pl-5 pr-9 py-2.5 text-xs font-display font-medium uppercase tracking-wide bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-        >
-          <option value="">Category: All</option>
-          {categories.map((cat) => (
-            <option key={cat.slug} value={cat.slug}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-        <i className="fa-solid fa-chevron-down text-[10px] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-      </div>
+    <div>
+      <button
+        type="button"
+        onClick={openPanel}
+        className="relative inline-flex items-center gap-2 border border-black/10 rounded-full pl-5 pr-5 py-2.5 text-xs font-display font-semibold uppercase tracking-wide hover:bg-black/5 transition"
+      >
+        <i className="fa-solid fa-sliders text-[11px]" />
+        Price Filter
+        {priceFilterActive && (
+          <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary-dark grid place-items-center">
+            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+          </span>
+        )}
+      </button>
 
-      <div className="relative">
-        <select
-          aria-label="Filter by price"
-          value={currentPriceKey}
-          onChange={(e) => handlePriceChange(e.target.value)}
-          className="appearance-none border border-black/10 rounded-full pl-5 pr-9 py-2.5 text-xs font-display font-medium uppercase tracking-wide bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-        >
-          {PRICE_RANGES.map((range) => (
-            <option key={range.key} value={range.key}>
-              {range.label}
-            </option>
-          ))}
-        </select>
-        <i className="fa-solid fa-chevron-down text-[10px] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-      </div>
+      {priceFilterActive && (
+        <div className="flex items-center gap-2 mt-3">
+          <span className="inline-flex items-center gap-2 text-xs font-display font-medium bg-black/[0.03] rounded-full pl-4 pr-2 py-2">
+            {formatPrice(urlMin)} – {formatPrice(urlMax)}
+            <button
+              type="button"
+              onClick={clearPriceFilter}
+              aria-label="Clear price filter"
+              className="w-5 h-5 rounded-full grid place-items-center hover:bg-black/10 transition"
+            >
+              <i className="fa-solid fa-xmark text-[10px]" />
+            </button>
+          </span>
+        </div>
+      )}
 
-      <div className="relative">
-        <select
-          aria-label="Sort products"
-          value={currentSort}
-          onChange={(e) => navigate({ sort: e.target.value })}
-          className="appearance-none border border-black/10 rounded-full pl-5 pr-9 py-2.5 text-xs font-display font-medium uppercase tracking-wide bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-        >
-          {SORT_OPTIONS.map((sort) => (
-            <option key={sort.key} value={sort.key}>
-              {sort.label}
-            </option>
-          ))}
-        </select>
-        <i className="fa-solid fa-chevron-down text-[10px] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-      </div>
+      {panelOpen && (
+        <div className="fixed inset-0 z-50 flex items-end">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setPanelOpen(false)} />
+          <div className="relative bg-white w-full rounded-t-4xl max-h-[85vh] overflow-y-auto p-6 shadow-soft animate-slide-up">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="font-display text-lg font-semibold">Filter by Price</h2>
+              <button
+                type="button"
+                onClick={() => setPanelOpen(false)}
+                aria-label="Close"
+                className="w-9 h-9 rounded-full grid place-items-center hover:bg-black/5 transition"
+              >
+                <i className="fa-solid fa-xmark" />
+              </button>
+            </div>
+            <p className="text-black/50 text-sm mb-7">Drag the handles to set your budget.</p>
 
-      {hasActiveFilters && (
-        <button
-          type="button"
-          onClick={() => navigate({ category: null, min_price: null, max_price: null, sort: null })}
-          className="font-display text-xs font-semibold uppercase tracking-wide text-black/50 hover:text-ink underline underline-offset-4 transition ml-1"
-        >
-          Reset
-        </button>
+            <p className="font-display font-semibold text-center mb-6">
+              {formatPrice(draftMin)} <span className="text-black/30">–</span> {formatPrice(draftMax)}
+            </p>
+
+            <div className="range-slider relative h-1.5 mb-9 mx-1.5">
+              <div className="absolute inset-0 rounded-full bg-black/10" />
+              <div
+                className="absolute h-full rounded-full bg-primary-dark"
+                style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }}
+              />
+              <input
+                type="range"
+                min={PRICE_MIN}
+                max={PRICE_MAX}
+                step={PRICE_STEP}
+                value={draftMin}
+                onChange={(e) => handleMinChange(Number(e.target.value))}
+                aria-label="Minimum price"
+                style={{ zIndex: draftMin > PRICE_MAX - PRICE_STEP * 5 ? 5 : 3 }}
+              />
+              <input
+                type="range"
+                min={PRICE_MIN}
+                max={PRICE_MAX}
+                step={PRICE_STEP}
+                value={draftMax}
+                onChange={(e) => handleMaxChange(Number(e.target.value))}
+                aria-label="Maximum price"
+                style={{ zIndex: 4 }}
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={clearPriceFilter}
+                className="flex-1 border border-black/10 rounded-full py-3.5 text-xs font-display font-semibold uppercase tracking-wide hover:bg-black/5 transition"
+              >
+                Clear
+              </button>
+              <button
+                type="button"
+                onClick={applyPriceFilter}
+                className="flex-1 bg-primary text-ink rounded-full py-3.5 text-xs font-display font-semibold uppercase tracking-wide hover:bg-primary-dark transition"
+              >
+                Apply Filter
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

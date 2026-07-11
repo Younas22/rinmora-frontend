@@ -35,6 +35,12 @@ export default function ProductReviews({
             </div>
             {review.title && <p className="font-display font-semibold text-sm">{review.title}</p>}
             <blockquote className="text-black/60 text-sm leading-relaxed">&ldquo;{review.body}&rdquo;</blockquote>
+            {review.photo_url && (
+              <a href={review.photo_url} target="_blank" rel="noopener noreferrer" className="block w-20 h-20 rounded-xl overflow-hidden border border-black/10">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={review.photo_url} alt="Photo shared by reviewer" className="w-full h-full object-cover" />
+              </a>
+            )}
           </figure>
         ))}
       </div>

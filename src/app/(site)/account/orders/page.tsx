@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthContext";
 import { getAccountOrders } from "@/lib/api";
-import { formatCurrency } from "@/lib/currency";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 import OrderStatusBadge from "@/components/account/OrderStatusBadge";
 import type { OrderDetail } from "@/types/checkout";
 import type { PaginationMeta } from "@/types/storefront";
@@ -21,6 +21,7 @@ const STATUS_TABS = [
 
 export default function AccountOrdersPage() {
   const { token } = useAuth();
+  const { formatPrice } = useCurrency();
   const [orders, setOrders] = useState<OrderDetail[] | null>(null);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [status, setStatus] = useState("");
@@ -135,7 +136,7 @@ export default function AccountOrdersPage() {
                   {order.items.length} {order.items.length === 1 ? "item" : "items"}
                 </p>
               </div>
-              <p className="font-display font-semibold text-base shrink-0">{formatCurrency(order.total)}</p>
+              <p className="font-display font-semibold text-base shrink-0">{formatPrice(order.total)}</p>
             </div>
 
             <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-black/5">

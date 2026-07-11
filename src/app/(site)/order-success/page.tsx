@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthContext";
-import { formatCurrency } from "@/lib/currency";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 import { getOrder } from "@/lib/api";
 import PaymentProofUploader from "@/components/shop/PaymentProofUploader";
 import type { OrderDetail } from "@/types/checkout";
@@ -26,6 +26,7 @@ export default function OrderSuccessPage() {
 function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const { token } = useAuth();
+  const { formatPrice } = useCurrency();
   const orderNumber = searchParams.get("order") ?? "";
   const email = searchParams.get("email") ?? undefined;
 
@@ -123,7 +124,7 @@ function OrderSuccessContent() {
             </div>
             <div className="sm:col-span-2 pt-4 border-t border-black/5 flex items-baseline justify-between">
               <dt className="font-display font-semibold text-base">Order Total</dt>
-              <dd className="font-display font-semibold text-xl">{formatCurrency(order.total)}</dd>
+              <dd className="font-display font-semibold text-xl">{formatPrice(order.total)}</dd>
             </div>
           </dl>
         </div>

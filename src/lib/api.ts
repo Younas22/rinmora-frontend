@@ -21,6 +21,8 @@ import type {
   Product,
   ProductDetailPayload,
   ProductFilters,
+  ReviewEligibility,
+  ReviewSubmissionPayload,
 } from "@/types/storefront";
 import type { CmsPage, ContactFormPayload, Faq, FaqCategory, SeoMeta, SiteSettings } from "@/types/cms";
 
@@ -274,6 +276,37 @@ export async function getAccountOrder(token: string, orderNumber: string): Promi
 
   const body = await res.json();
   return body.data as OrderDetail;
+}
+
+export async function getReviewEligibility(token: string, slug: string): Promise<ReviewEligibility> {
+  return apiGet<ReviewEligibility>(`/storefront/products/${slug}/review-eligibility`, token);
+}
+
+export async function submitReview(
+  token: string,
+  payload: ReviewSubmissionPayload
+): Promise<{ message: string; data: ReviewEligibility["existing_review"] }> {
+  const form = new FormData();
+  form.append("product_id", String(payload.product_id));
+  form.append("rating", String(payload.rating));
+  if (payload.title) form.append("title", payload.title);
+  form.append("body", payload.body);
+  if (payload.photo) form.append("photo", payload.photo);
+  if (payload.remove_photo) form.append("remove_photo", "1");
+
+  const res = await fetch(`${API_URL}/storefront/reviews`, {
+    method: "POST",
+    headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
+    body: form,
+  });
+
+  const body = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new ApiError(body?.message ?? `Request failed (${res.status})`, res.status, body?.errors);
+  }
+
+  return body;
 }
 
 export async function updateProfile(token: string, payload: ProfileUpdatePayload): Promise<AuthUser> {

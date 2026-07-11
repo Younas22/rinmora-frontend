@@ -3,6 +3,7 @@ import { Poppins, Manrope } from "next/font/google";
 import { AuthProvider } from "@/components/auth/AuthContext";
 import { CartProvider } from "@/components/cart/CartContext";
 import CartToast from "@/components/cart/CartToast";
+import { CurrencyProvider } from "@/components/currency/CurrencyContext";
 import { WishlistProvider } from "@/components/wishlist/WishlistContext";
 import { QuickViewProvider } from "@/components/shop/QuickViewContext";
 import QuickViewModal from "@/components/shop/QuickViewModal";
@@ -55,17 +56,19 @@ export default async function RootLayout({
         )}
       </head>
       <body className="bg-white text-ink antialiased">
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <QuickViewProvider>
-                {children}
-                <QuickViewModal />
-                <CartToast />
-              </QuickViewProvider>
-            </WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
+        <CurrencyProvider currency={settings?.currency}>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <QuickViewProvider>
+                  {children}
+                  <QuickViewModal />
+                  <CartToast />
+                </QuickViewProvider>
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
+        </CurrencyProvider>
       </body>
     </html>
   );

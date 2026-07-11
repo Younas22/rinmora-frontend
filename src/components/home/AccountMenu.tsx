@@ -9,7 +9,7 @@ export default function AccountMenu() {
   const [open, setOpen] = useState(false);
 
   if (loading) {
-    return <div className="w-10 h-10 rounded-full" aria-hidden />;
+    return <div className="w-9 h-9 md:w-10 md:h-10 rounded-full" aria-hidden />;
   }
 
   if (!user) {
@@ -17,9 +17,9 @@ export default function AccountMenu() {
       <Link
         href="/login"
         aria-label="Sign in"
-        className="w-10 h-10 grid place-items-center rounded-full hover:bg-black/5 transition"
+        className="w-9 h-9 md:w-10 md:h-10 grid place-items-center rounded-full hover:bg-black/5 transition"
       >
-        <i className="fa-regular fa-user text-[15px]" />
+        <i className="fa-regular fa-user text-[13px] md:text-[15px]" />
       </Link>
     );
   }
@@ -30,9 +30,9 @@ export default function AccountMenu() {
         type="button"
         aria-label="Account menu"
         onClick={() => setOpen((v) => !v)}
-        className="w-10 h-10 grid place-items-center rounded-full hover:bg-black/5 transition"
+        className="w-9 h-9 md:w-10 md:h-10 grid place-items-center rounded-full hover:bg-black/5 transition"
       >
-        <i className="fa-solid fa-user text-[15px] text-primary-dark" />
+        <i className="fa-solid fa-user text-[13px] md:text-[15px] text-primary-dark" />
       </button>
 
       {open && (

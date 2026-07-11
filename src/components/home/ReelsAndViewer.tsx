@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRipple } from "@/lib/ripple";
-import { formatCurrency } from "@/lib/currency";
+import { useCurrency } from "@/components/currency/CurrencyContext";
 import { useCart } from "@/components/cart/CartContext";
 import DragScrollRow from "./DragScrollRow";
 import type { Reel } from "@/types/storefront";
@@ -12,13 +12,16 @@ const REEL_DURATION = 4500;
 
 export default function ReelsAndViewer({ reels }: { reels: Reel[] }) {
   const { addItem } = useCart();
+  const { formatPrice } = useCurrency();
   const [open, setOpen] = useState(false);
   const [reelIndex, setReelIndex] = useState(0);
   const [slideIndex, setSlideIndex] = useState(0);
   const [muted, setMuted] = useState(true);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(reels[0]?.likes ?? 0);
+  const [shareCopied, setShareCopied] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const goToReel = useCallback(
     (index: number, slide = 0) => {
@@ -66,6 +69,15 @@ export default function ReelsAndViewer({ reels }: { reels: Reel[] }) {
   }, [open, reelIndex, slideIndex, advanceSlide]);
 
   useEffect(() => {
+    if (open) return;
+    const video = videoRef.current;
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  }, [open]);
+
+  useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
@@ -91,6 +103,26 @@ export default function ReelsAndViewer({ reels }: { reels: Reel[] }) {
   const avatarFor = (r: Reel) => r.avatar_url ?? `https://picsum.photos/seed/reel-${r.slug}/200/200`;
   const thumbFor = (r: Reel) => r.slides[0]?.url ?? `https://picsum.photos/seed/reel-media-${r.slug}/700/1200`;
   const slideUrl = slide.url ?? `https://picsum.photos/seed/reel-media-${reel.slug}-${slideIndex}/700/1200`;
+
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/#reels`;
+    const shareData = { title: reel.title, text: `Check out "${reel.title}" on Rinmora`, url: shareUrl };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {
+        // user cancelled the share sheet — nothing to do
+      }
+      return;
+    }
+
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    }
+  };
 
   return (
     <>
@@ -165,12 +197,20 @@ export default function ReelsAndViewer({ reels }: { reels: Reel[] }) {
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      aria-label="Share"
-                      className="w-9 h-9 rounded-full bg-black/35 backdrop-blur text-white md:bg-white/95 md:backdrop-blur-none md:text-ink grid place-items-center md:shadow hover:bg-black/50 md:hover:bg-primary transition"
-                    >
-                      <i className="fa-solid fa-share-nodes text-xs" />
-                    </button>
+                    <div className="relative">
+                      <button
+                        aria-label="Share"
+                        onClick={handleShare}
+                        className="w-9 h-9 rounded-full bg-black/35 backdrop-blur text-white md:bg-white/95 md:backdrop-blur-none md:text-ink grid place-items-center md:shadow hover:bg-black/50 md:hover:bg-primary transition"
+                      >
+                        <i className={`fa-solid ${shareCopied ? "fa-check" : "fa-share-nodes"} text-xs`} />
+                      </button>
+                      {shareCopied && (
+                        <span className="absolute top-full mt-1.5 right-0 whitespace-nowrap bg-black/80 text-white text-[10px] font-medium px-2.5 py-1 rounded-full">
+                          Link copied!
+                        </span>
+                      )}
+                    </div>
                     <button
                       aria-label="Toggle sound"
                       onClick={() => setMuted((v) => !v)}
@@ -193,6 +233,7 @@ export default function ReelsAndViewer({ reels }: { reels: Reel[] }) {
                 {slide.type === "video" ? (
                   <video
                     key={slideUrl}
+                    ref={videoRef}
                     src={slideUrl}
                     className="w-full h-full object-cover"
                     autoPlay
@@ -262,10 +303,10 @@ export default function ReelsAndViewer({ reels }: { reels: Reel[] }) {
                         <div className="flex-1 min-w-0">
                           <p className="font-display text-xs font-semibold truncate">{p.name}</p>
                           <div className="flex items-baseline gap-2 mt-0.5">
-                            <span className="font-display font-semibold text-sm">{formatCurrency(p.price)}</span>
+                            <span className="font-display font-semibold text-sm">{formatPrice(p.price)}</span>
                             {p.compare_at_price && p.compare_at_price > p.price && (
                               <span className="text-black/40 text-xs line-through">
-                                {formatCurrency(p.compare_at_price)}
+                                {formatPrice(p.compare_at_price)}
                               </span>
                             )}
                           </div>

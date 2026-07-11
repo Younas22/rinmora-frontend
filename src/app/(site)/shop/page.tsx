@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { getCategories, getProducts } from "@/lib/api";
 import CategoryChips from "@/components/shop/CategoryChips";
 import ShopFilterBar from "@/components/shop/ShopFilterBar";
+import ShopSidebar from "@/components/shop/ShopSidebar";
+import SortSelect from "@/components/shop/SortSelect";
 import Pagination from "@/components/shop/Pagination";
 import ProductCard from "@/components/home/ProductCard";
 import type { ProductSort } from "@/types/storefront";
@@ -59,34 +61,41 @@ export default async function ShopPage({
         <span className="text-ink font-medium">{activeCategoryName ?? "Shop"}</span>
       </nav>
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 pb-6">
+      <section className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 pb-6 lg:hidden">
         <CategoryChips categories={categories} activeSlug={category} basePath="/shop" />
       </section>
 
       <section className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 pb-16 md:pb-24">
-        <div className="mb-8 space-y-5">
-          <ShopFilterBar basePath="/shop" categories={categories} />
+        <div className="lg:grid lg:grid-cols-[260px_1fr] lg:gap-10 lg:items-start">
+          <ShopSidebar basePath="/shop" categories={categories} />
 
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <p className="text-xs md:text-sm text-black/50">
-              {products.meta.total > 0
-                ? `Showing ${products.meta.from}–${products.meta.to} of ${products.meta.total} Products`
-                : "No products found"}
-            </p>
+          <div>
+            <div className="mb-6 lg:hidden">
+              <ShopFilterBar basePath="/shop" />
+            </div>
+
+            <div className="mb-8 flex items-center justify-between gap-4 flex-wrap">
+              <p className="text-xs md:text-sm text-black/50">
+                {products.meta.total > 0
+                  ? `Showing ${products.meta.from}–${products.meta.to} of ${products.meta.total} Products`
+                  : "No products found"}
+              </p>
+              <SortSelect basePath="/shop" />
+            </div>
+
+            {products.data.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-7">
+                {products.data.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20 text-black/50 text-sm">No products match these filters.</div>
+            )}
+
+            <Pagination currentPage={products.meta.current_page} lastPage={products.meta.last_page} buildHref={buildHref} />
           </div>
         </div>
-
-        {products.data.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-7">
-            {products.data.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 text-black/50 text-sm">No products match these filters.</div>
-        )}
-
-        <Pagination currentPage={products.meta.current_page} lastPage={products.meta.last_page} buildHref={buildHref} />
       </section>
     </main>
   );
