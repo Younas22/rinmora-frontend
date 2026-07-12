@@ -1,7 +1,7 @@
 import Image from "next/image";
 import RippleLink from "./RippleLink";
 
-const POSTS = Array.from({ length: 6 }, (_, i) => `https://picsum.photos/seed/insta-${i + 1}/400/400`);
+const POSTS = Array.from({ length: 6 }, (_, i) => `/instagram/insta${i + 1}.png`);
 
 export default function InstagramGallery() {
   return (
