@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import RippleLink from "@/components/home/RippleLink";
 import type { Product } from "@/types/storefront";
 
 export default function ProductScrollRow({
@@ -17,12 +18,13 @@ export default function ProductScrollRow({
     <div>
       <div className="flex items-center justify-between mb-5">
         <h2 className="font-display text-xl md:text-2xl font-semibold">{title}</h2>
-        <Link
+        <RippleLink
           href={viewAllHref}
-          className="font-display text-xs font-semibold uppercase tracking-wide text-black/50 hover:text-ink transition"
+          className="group inline-flex items-center gap-1.5 shrink-0 border border-ink/15 rounded-full px-4 py-2 font-display text-xs font-semibold uppercase tracking-wide text-ink/70 hover:bg-ink hover:text-white hover:border-ink transition-colors"
         >
           View All
-        </Link>
+          <i className="fa-solid fa-arrow-right text-[10px] transition-transform group-hover:translate-x-0.5" />
+        </RippleLink>
       </div>
       <div className="flex gap-4 md:gap-5 overflow-x-auto snap-row -mx-5 px-5 md:mx-0 md:px-0">
         {products.map((product) => (
