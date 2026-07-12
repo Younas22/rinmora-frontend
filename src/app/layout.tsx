@@ -8,6 +8,7 @@ import { WishlistProvider } from "@/components/wishlist/WishlistContext";
 import { QuickViewProvider } from "@/components/shop/QuickViewContext";
 import QuickViewModal from "@/components/shop/QuickViewModal";
 import { getSiteSettings } from "@/lib/api";
+import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -26,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings().catch(() => null);
 
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    metadataBase: new URL(SITE_URL),
     title: {
       default: "Rinmora — Elegance You Can Carry",
       template: "%s",
