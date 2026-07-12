@@ -26,7 +26,8 @@ import type {
 } from "@/types/storefront";
 import type { CmsPage, ContactFormPayload, Faq, FaqCategory, SeoMeta, SiteSettings } from "@/types/cms";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/rinmora/api";
+const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/rinmora/api";
+const API_URL = /^https?:\/\//.test(RAW_API_URL) ? RAW_API_URL : `https://${RAW_API_URL}`;
 
 export class ApiError extends Error {
   constructor(
