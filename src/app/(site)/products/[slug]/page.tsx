@@ -81,6 +81,13 @@ export default async function ProductDetailPage({
         </div>
       </section>
 
+      {product.description && (
+        <section className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 py-10 md:py-14 border-t border-black/5">
+          <h2 className="font-display text-xl md:text-2xl font-semibold mb-6">Product Details</h2>
+          <p className="text-black/65 text-sm md:text-base leading-relaxed whitespace-pre-line">{product.description}</p>
+        </section>
+      )}
+
       <section id="reviews" className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 py-10 md:py-14 border-t border-black/5">
         <h2 className="font-display text-xl md:text-2xl font-semibold mb-8">Customer Reviews</h2>
         <div className="mb-10">
