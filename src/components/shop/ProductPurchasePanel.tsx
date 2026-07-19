@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCurrency } from "@/components/currency/CurrencyContext";
 import AddToCartButton from "@/components/shared/AddToCartButton";
 import WishlistButton from "@/components/shared/WishlistButton";
@@ -19,7 +19,7 @@ export default function ProductPurchasePanel({
   onViewDetailsClick?: () => void;
 }) {
   const router = useRouter();
-  const { addItem } = useCart();
+  const { items: cartItems, addItem } = useCart();
   const { formatPrice } = useCurrency();
 
   const optionGroups = useMemo(() => {
@@ -56,6 +56,20 @@ export default function ProductPurchasePanel({
   const stockQuantity = selectedVariant ? selectedVariant.quantity : product.quantity;
   const inStock = stockQuantity > 0;
   const lowStock = inStock && stockQuantity < 5;
+
+  const cartQty = useMemo(() => {
+    const line = cartItems.find(
+      (item) => item.productId === product.id && (item.variant?.id ?? null) === (selectedVariant?.id ?? null)
+    );
+    return line?.qty ?? 0;
+  }, [cartItems, product.id, selectedVariant]);
+
+  const remainingStock = Math.max(0, stockQuantity - cartQty);
+  const canAddToCart = inStock && remainingStock > 0;
+
+  useEffect(() => {
+    setQty((q) => Math.min(q, Math.max(remainingStock, 1)));
+  }, [remainingStock]);
 
   return (
     <div className="flex flex-col">
@@ -152,7 +166,8 @@ export default function ProductPurchasePanel({
             type="button"
             aria-label="Decrease quantity"
             onClick={() => setQty((q) => Math.max(1, q - 1))}
-            className="w-9 h-9 rounded-full grid place-items-center hover:bg-black/5 transition"
+            disabled={qty <= 1}
+            className="w-9 h-9 rounded-full grid place-items-center hover:bg-black/5 transition disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
           >
             <i className="fa-solid fa-minus text-xs" />
           </button>
@@ -160,17 +175,25 @@ export default function ProductPurchasePanel({
           <button
             type="button"
             aria-label="Increase quantity"
-            onClick={() => setQty((q) => q + 1)}
-            className="w-9 h-9 rounded-full grid place-items-center hover:bg-black/5 transition"
+            onClick={() => setQty((q) => Math.min(remainingStock, q + 1))}
+            disabled={qty >= remainingStock}
+            className="w-9 h-9 rounded-full grid place-items-center hover:bg-black/5 transition disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
           >
             <i className="fa-solid fa-plus text-xs" />
           </button>
         </div>
+        {inStock && cartQty > 0 && (
+          <p className="text-[11px] text-black/40 mt-2">
+            {remainingStock > 0
+              ? `${cartQty} already in your cart · ${remainingStock} more available`
+              : "Maximum available quantity is already in your cart"}
+          </p>
+        )}
       </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-7">
         <AddToCartButton
-          disabled={!inStock}
+          disabled={!canAddToCart}
           className="flex-1 min-w-[140px] bg-ink text-white font-display font-semibold text-sm tracking-wide uppercase py-3.5 rounded-full hover:bg-black/80 transition"
           onAdd={() =>
             addItem(
@@ -190,7 +213,7 @@ export default function ProductPurchasePanel({
           Add to Cart
         </AddToCartButton>
         <AddToCartButton
-          disabled={!inStock}
+          disabled={!canAddToCart}
           className="flex-1 min-w-[140px] bg-primary text-ink font-display font-semibold text-sm tracking-wide uppercase py-3.5 rounded-full hover:bg-primary-dark transition"
           onAdd={() => {
             addItem(

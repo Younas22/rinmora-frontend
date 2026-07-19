@@ -15,7 +15,12 @@ export default function CartPage() {
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [freeShipping, setFreeShipping] = useState<{ enabled: boolean; threshold: number } | null>(null);
+  const [stockByLine, setStockByLine] = useState<Record<string, number>>({});
   const hasValidatedRef = useRef(false);
+
+  function lineKey(productId: number, variantId?: number | null) {
+    return `${productId}:${variantId ?? "base"}`;
+  }
 
   useEffect(() => {
     getSiteSettings()
@@ -36,6 +41,7 @@ export default function CartPage() {
       .then((results) => {
         const stillAvailable = results.filter((r) => r.available);
         const removedCount = results.length - stillAvailable.length;
+        let clampedCount = 0;
 
         const next = stillAvailable
           .map((r) => {
@@ -43,8 +49,12 @@ export default function CartPage() {
               (i) => i.productId === r.product_id && (i.variant?.id ?? null) === (r.variant_id ?? null)
             );
             if (!original) return null;
+            const maxQty = r.quantity_available;
+            const qty = maxQty !== undefined ? Math.min(original.qty, maxQty) : original.qty;
+            if (qty < original.qty) clampedCount++;
             return {
               ...original,
+              qty,
               name: r.name ?? original.name,
               slug: r.slug ?? original.slug,
               imageUrl: r.image_url ?? original.imageUrl,
@@ -56,11 +66,25 @@ export default function CartPage() {
 
         replaceItems(next);
 
+        const nextStock: Record<string, number> = {};
+        for (const r of stillAvailable) {
+          if (r.quantity_available !== undefined) {
+            nextStock[lineKey(r.product_id, r.variant_id)] = r.quantity_available;
+          }
+        }
+        setStockByLine(nextStock);
+
         if (removedCount > 0) {
           setSyncNotice(
             removedCount === 1
               ? "One item was removed because it's no longer available."
               : `${removedCount} items were removed because they're no longer available.`
+          );
+        } else if (clampedCount > 0) {
+          setSyncNotice(
+            clampedCount === 1
+              ? "One item's quantity was reduced to match available stock."
+              : `${clampedCount} items' quantities were reduced to match available stock.`
           );
         }
       })
@@ -169,26 +193,47 @@ export default function CartPage() {
                       </div>
 
                       <div className="flex flex-wrap items-center justify-between gap-4 mt-4">
-                        <div className="inline-flex items-center gap-1 border border-black/10 rounded-full p-1">
-                          <button
-                            type="button"
-                            aria-label="Decrease quantity"
-                            onClick={() => setQty(item.productId, item.variant?.id, item.qty - 1)}
-                            className="w-8 h-8 rounded-full grid place-items-center hover:bg-black/5 transition"
-                          >
-                            <i className="fa-solid fa-minus text-xs" />
-                          </button>
-                          <span className="w-8 text-center font-display font-semibold text-sm select-none">
-                            {item.qty}
-                          </span>
-                          <button
-                            type="button"
-                            aria-label="Increase quantity"
-                            onClick={() => setQty(item.productId, item.variant?.id, item.qty + 1)}
-                            className="w-8 h-8 rounded-full grid place-items-center hover:bg-black/5 transition"
-                          >
-                            <i className="fa-solid fa-plus text-xs" />
-                          </button>
+                        <div>
+                          <div className="inline-flex items-center gap-1 border border-black/10 rounded-full p-1">
+                            <button
+                              type="button"
+                              aria-label="Decrease quantity"
+                              onClick={() => setQty(item.productId, item.variant?.id, item.qty - 1)}
+                              className="w-8 h-8 rounded-full grid place-items-center hover:bg-black/5 transition"
+                            >
+                              <i className="fa-solid fa-minus text-xs" />
+                            </button>
+                            <span className="w-8 text-center font-display font-semibold text-sm select-none">
+                              {item.qty}
+                            </span>
+                            {(() => {
+                              const maxQty = stockByLine[lineKey(item.productId, item.variant?.id)];
+                              const atMax = maxQty !== undefined && item.qty >= maxQty;
+                              return (
+                                <button
+                                  type="button"
+                                  aria-label="Increase quantity"
+                                  disabled={atMax}
+                                  onClick={() =>
+                                    setQty(
+                                      item.productId,
+                                      item.variant?.id,
+                                      maxQty !== undefined ? Math.min(maxQty, item.qty + 1) : item.qty + 1
+                                    )
+                                  }
+                                  className="w-8 h-8 rounded-full grid place-items-center hover:bg-black/5 transition disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+                                >
+                                  <i className="fa-solid fa-plus text-xs" />
+                                </button>
+                              );
+                            })()}
+                          </div>
+                          {(() => {
+                            const maxQty = stockByLine[lineKey(item.productId, item.variant?.id)];
+                            return maxQty !== undefined && item.qty >= maxQty ? (
+                              <p className="text-[11px] text-black/40 mt-1.5">Max available quantity reached</p>
+                            ) : null;
+                          })()}
                         </div>
 
                         <div className="text-right">
