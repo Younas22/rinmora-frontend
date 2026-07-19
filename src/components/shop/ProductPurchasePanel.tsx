@@ -55,6 +55,7 @@ export default function ProductPurchasePanel({
   const effectivePrice = selectedVariant?.price ?? product.price;
   const stockQuantity = selectedVariant ? selectedVariant.quantity : product.quantity;
   const inStock = stockQuantity > 0;
+  const lowStock = inStock && stockQuantity < 5;
 
   return (
     <div className="flex flex-col">
@@ -96,8 +97,14 @@ export default function ProductPurchasePanel({
       <dl className="grid grid-cols-2 gap-y-2 text-xs text-black/55 mb-6">
         <div className="flex items-center gap-1.5">
           <dt className="sr-only">Availability</dt>
-          <span className={`w-1.5 h-1.5 rounded-full ${inStock ? "bg-green-600" : "bg-red-500"}`} />
-          <dd>{inStock ? "In Stock" : "Out of Stock"}</dd>
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${
+              !inStock ? "bg-red-500" : lowStock ? "bg-amber-500" : "bg-green-600"
+            }`}
+          />
+          <dd className={lowStock ? "text-amber-600 font-medium" : undefined}>
+            {!inStock ? "Out of Stock" : lowStock ? `Only ${stockQuantity} left in stock` : "In Stock"}
+          </dd>
         </div>
         <div>
           <dt className="inline text-black/40">SKU:</dt> <dd className="inline">{selectedVariant?.sku ?? product.sku}</dd>
