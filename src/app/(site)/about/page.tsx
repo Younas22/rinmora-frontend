@@ -58,8 +58,7 @@ export default function AboutPage() {
 
       <section className="py-14 md:py-20 border-b border-black/5">
         <div className="max-w-3xl mx-auto px-5 md:px-8 text-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo/logo-01.png" alt="Rinmora" className="h-14 md:h-16 w-auto mx-auto mb-5" />
+          <h2 className="font-display text-3xl md:text-4xl font-semibold tracking-wide mb-3">Rinmora</h2>
           <p className="font-display text-lg md:text-xl text-black/55 tracking-wide">Where Style Meets Grace</p>
         </div>
       </section>
