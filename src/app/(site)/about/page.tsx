@@ -24,17 +24,11 @@ const VALUES = [
   },
 ];
 
-const STATS = [
-  { value: "50K+", label: "Happy Customers" },
-  { value: "120K+", label: "Orders Delivered" },
-  { value: "180+", label: "Premium Designs" },
-  { value: "24", label: "Countries Served" },
-];
-
-const TESTIMONIALS = [
-  { name: "Sana K.", quote: "Every detail feels intentional. Rinmora bags are the first thing people notice." },
-  { name: "Amina R.", quote: "Quality that genuinely rivals designer brands, at a fraction of the price." },
-  { name: "Hira M.", quote: "My Rinmora tote has been through everything with me and still looks brand new." },
+const GALLERY = [
+  { src: "/logo/logo-01.png", alt: "Rinmora primary logo", fit: "contain", bg: "bg-white" },
+  { src: "/logo/98px-01.jpg", alt: "Rinmora logo mark, tan background", fit: "contain", bg: "bg-white" },
+  { src: "/instagram/insta5.png", alt: "Rinmora tote styled in a modern living room" },
+  { src: "/instagram/insta3.png", alt: "Rinmora bag on display" },
 ];
 
 export default function AboutPage() {
@@ -43,12 +37,12 @@ export default function AboutPage() {
       <section className="relative overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://picsum.photos/seed/rinmora-about-hero/1600/900"
+          src="/instagram/insta6.png"
           alt="Woman wearing a Rinmora handbag"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/45" />
-        <div className="relative max-w-4xl mx-auto px-5 md:px-8 py-24 md:py-36 text-center text-white">
+        <div className="relative max-w-4xl mx-auto px-5 md:px-8 py-16 md:py-20 text-center text-white">
           <span className="font-display text-xs tracking-[0.25em] uppercase text-primary font-semibold">
             Our Story
           </span>
@@ -62,37 +56,50 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-5 md:px-8 lg:px-10 py-16 md:py-24">
-        <div className="grid md:grid-cols-3 gap-8 md:gap-10">
-          <div>
-            <div className="w-12 h-12 rounded-full bg-primary/20 grid place-items-center mb-5">
-              <i className="fa-solid fa-book-open text-primary-dark" />
+      <section className="py-14 md:py-20 border-b border-black/5">
+        <div className="max-w-3xl mx-auto px-5 md:px-8 text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo/logo-01.png" alt="Rinmora" className="h-14 md:h-16 w-auto mx-auto mb-5" />
+          <p className="font-display text-lg md:text-xl text-black/55 tracking-wide">Where Style Meets Grace</p>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden py-10 md:py-12">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/instagram/insta2.png" alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-white/35" />
+        <div className="relative max-w-6xl mx-auto px-5 md:px-8 lg:px-10">
+          <div className="grid md:grid-cols-3 gap-5 md:gap-6">
+            <div className="bg-white/85 backdrop-blur-sm rounded-3xl p-5 md:p-6 shadow-card">
+              <div className="w-11 h-11 rounded-full bg-primary/20 grid place-items-center mb-4">
+                <i className="fa-solid fa-book-open text-primary-dark" />
+              </div>
+              <h2 className="font-display text-base font-semibold mb-2">Our Story</h2>
+              <p className="text-black/55 text-sm leading-relaxed">
+                Founded in 2019, Rinmora began as a small atelier dedicated to reimagining the everyday handbag —
+                blending timeless silhouettes with modern craftsmanship.
+              </p>
             </div>
-            <h2 className="font-display text-lg font-semibold mb-3">Our Story</h2>
-            <p className="text-black/55 text-sm leading-relaxed">
-              Founded in 2019, Rinmora began as a small atelier dedicated to reimagining the everyday handbag —
-              blending timeless silhouettes with modern craftsmanship.
-            </p>
-          </div>
-          <div>
-            <div className="w-12 h-12 rounded-full bg-primary/20 grid place-items-center mb-5">
-              <i className="fa-solid fa-bullseye text-primary-dark" />
+            <div className="bg-white/85 backdrop-blur-sm rounded-3xl p-5 md:p-6 shadow-card">
+              <div className="w-11 h-11 rounded-full bg-primary/20 grid place-items-center mb-4">
+                <i className="fa-solid fa-bullseye text-primary-dark" />
+              </div>
+              <h2 className="font-display text-base font-semibold mb-2">Our Mission</h2>
+              <p className="text-black/55 text-sm leading-relaxed">
+                To create beautifully crafted handbags that empower women to feel confident, elegant, and
+                effortlessly put-together every day.
+              </p>
             </div>
-            <h2 className="font-display text-lg font-semibold mb-3">Our Mission</h2>
-            <p className="text-black/55 text-sm leading-relaxed">
-              To create beautifully crafted handbags that empower women to feel confident, elegant, and effortlessly
-              put-together every day.
-            </p>
-          </div>
-          <div>
-            <div className="w-12 h-12 rounded-full bg-primary/20 grid place-items-center mb-5">
-              <i className="fa-regular fa-eye text-primary-dark" />
+            <div className="bg-white/85 backdrop-blur-sm rounded-3xl p-5 md:p-6 shadow-card">
+              <div className="w-11 h-11 rounded-full bg-primary/20 grid place-items-center mb-4">
+                <i className="fa-regular fa-eye text-primary-dark" />
+              </div>
+              <h2 className="font-display text-base font-semibold mb-2">Our Vision</h2>
+              <p className="text-black/55 text-sm leading-relaxed">
+                To become the most trusted name in accessible luxury, known for quality, integrity, and designs
+                that stand the test of time.
+              </p>
             </div>
-            <h2 className="font-display text-lg font-semibold mb-3">Our Vision</h2>
-            <p className="text-black/55 text-sm leading-relaxed">
-              To become the most trusted name in accessible luxury, known for quality, integrity, and designs that
-              stand the test of time.
-            </p>
           </div>
         </div>
       </section>
@@ -119,6 +126,45 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="max-w-6xl mx-auto px-5 md:px-8 lg:px-10 py-16 md:py-24">
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+          <div className="relative rounded-4xl bg-gradient-to-b from-primary/15 via-primary/5 to-white overflow-hidden h-[420px] md:h-[560px] flex items-end justify-center pt-8">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/ceo.png"
+              alt="Tahira Younas, Founder & CEO of Rinmora"
+              className="h-full w-auto max-w-full object-contain object-bottom"
+            />
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-64 md:h-72"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 15%, rgba(255,255,255,0.8) 30%, rgba(255,255,255,0.55) 48%, rgba(255,255,255,0.28) 66%, rgba(255,255,255,0.1) 82%, rgba(255,255,255,0) 100%)",
+              }}
+            />
+          </div>
+          <div>
+            <span className="font-display text-xs tracking-[0.25em] uppercase text-primary-dark font-semibold">
+              Meet Our Founder
+            </span>
+            <h2 className="font-display text-2xl md:text-3xl font-semibold mt-2 mb-1">Tahira Younas</h2>
+            <p className="text-black/45 text-sm font-medium mb-6">Founder &amp; CEO, Rinmora</p>
+            <p className="text-black/60 text-sm md:text-base leading-relaxed mb-4">
+              Tahira Younas started Rinmora with little more than a sketchbook, a sewing table, and an unshakable
+              belief that Pakistani craftsmanship deserved a place on the world stage. What began as late nights
+              perfecting a single prototype has grown into a brand carried by thousands of women across the
+              country — without ever losing the personal touch that started it all.
+            </p>
+            <p className="text-black/60 text-sm md:text-base leading-relaxed mb-6">
+              &quot;Every bag we make carries a piece of the woman who carries it,&quot; she says. &quot;My job
+              isn&apos;t just to build a company — it&apos;s to make sure every customer feels seen, valued, and a
+              little more confident every time she steps out the door.&quot;
+            </p>
+            <p className="font-display text-sm font-semibold text-ink">— Tahira Younas</p>
+          </div>
+        </div>
+      </section>
+
       <section className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 py-16 md:py-24">
         <div className="text-center mb-10">
           <span className="font-display text-xs tracking-[0.25em] uppercase text-primary-dark font-semibold">
@@ -127,67 +173,31 @@ export default function AboutPage() {
           <h2 className="font-display text-2xl md:text-3xl font-semibold mt-2">Meet Our Brand</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          <div className="rounded-2xl overflow-hidden aspect-[3/4] md:col-span-2 md:row-span-2">
+          <div className="relative rounded-2xl overflow-hidden aspect-[3/4] md:col-span-2 md:row-span-2 bg-gradient-to-br from-neutral-900 via-black to-neutral-800 grid place-items-center p-8 md:p-10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://picsum.photos/seed/brand-1/700/900"
-              alt="Rinmora atelier"
-              className="w-full h-full object-cover"
+              src="/brand/flyer.png"
+              alt="Rinmora packaging and thank-you card"
+              className="max-w-[75%] max-h-[85%] object-contain rounded-xl shadow-2xl -rotate-2"
             />
           </div>
-          {["brand-2", "brand-3", "brand-4", "brand-5"].map((seed) => (
-            <div key={seed} className="rounded-2xl overflow-hidden aspect-square">
+          {GALLERY.map((item) => (
+            <div
+              key={item.src}
+              className={`rounded-2xl overflow-hidden aspect-square ${item.bg ?? ""} ${
+                item.fit === "contain" ? "grid place-items-center p-6" : ""
+              }`}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`https://picsum.photos/seed/${seed}/400/400`}
-                alt="Rinmora craftsmanship"
-                className="w-full h-full object-cover"
+                src={item.src}
+                alt={item.alt}
+                className={
+                  item.fit === "contain" ? "max-w-full max-h-full object-contain" : "w-full h-full object-cover"
+                }
               />
             </div>
           ))}
-        </div>
-      </section>
-
-      <section className="bg-ink text-white py-16 md:py-20">
-        <div className="max-w-6xl mx-auto px-5 md:px-8 lg:px-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {STATS.map((stat) => (
-              <div key={stat.label}>
-                <p className="font-display text-3xl md:text-4xl font-semibold text-primary">{stat.value}</p>
-                <p className="text-white/60 text-xs md:text-sm mt-2">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-24">
-        <div className="max-w-6xl mx-auto px-5 md:px-8 lg:px-10">
-          <div className="text-center mb-12">
-            <span className="font-display text-xs tracking-[0.25em] uppercase text-primary-dark font-semibold">
-              Testimonials
-            </span>
-            <h2 className="font-display text-2xl md:text-3xl font-semibold mt-2">Loved By Our Customers</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, i) => (
-              <figure key={t.name} className="bg-black/[0.02] rounded-3xl p-7 flex flex-col gap-4">
-                <div className="flex items-center gap-4">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://picsum.photos/seed/about-review-${i + 1}/80/80`}
-                    alt={t.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                  <div>
-                    <figcaption className="font-display font-semibold text-sm">{t.name}</figcaption>
-                    <div className="text-primary-dark text-xs">★★★★★</div>
-                  </div>
-                </div>
-                <blockquote className="text-black/60 text-sm leading-relaxed">&quot;{t.quote}&quot;</blockquote>
-              </figure>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -195,7 +205,7 @@ export default function AboutPage() {
         <div className="relative rounded-4xl overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://picsum.photos/seed/about-cta/1400/500"
+            src="/instagram/insta4.png"
             alt="Rinmora handbag collection"
             className="absolute inset-0 w-full h-full object-cover"
           />
