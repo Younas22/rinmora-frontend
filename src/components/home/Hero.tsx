@@ -79,7 +79,7 @@ export default function Hero({
               </div>
               <div>
                 <p className="font-display font-semibold text-sm leading-none">4.9 / 5.0</p>
-                <p className="text-xs text-black/50 mt-1">2,400+ reviews</p>
+                <p className="text-xs text-black/50 mt-1">32 reviews</p>
               </div>
             </div>
           </div>
