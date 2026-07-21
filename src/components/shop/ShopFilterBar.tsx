@@ -104,7 +104,7 @@ export default function ShopFilterBar({ basePath }: { basePath: string }) {
               type="button"
               onClick={clearPriceFilter}
               aria-label="Clear price filter"
-              className="w-5 h-5 rounded-full grid place-items-center hover:bg-black/10 transition"
+              className="cursor-pointer w-5 h-5 rounded-full grid place-items-center hover:bg-black/10 transition"
             >
               <i className="fa-solid fa-xmark text-[10px]" />
             </button>
@@ -122,7 +122,7 @@ export default function ShopFilterBar({ basePath }: { basePath: string }) {
                 type="button"
                 onClick={() => setPanelOpen(false)}
                 aria-label="Close"
-                className="w-9 h-9 rounded-full grid place-items-center hover:bg-black/5 transition"
+                className="cursor-pointer w-9 h-9 rounded-full grid place-items-center hover:bg-black/5 transition"
               >
                 <i className="fa-solid fa-xmark" />
               </button>
@@ -165,14 +165,14 @@ export default function ShopFilterBar({ basePath }: { basePath: string }) {
               <button
                 type="button"
                 onClick={clearPriceFilter}
-                className="flex-1 border border-black/10 rounded-full py-3.5 text-xs font-display font-semibold uppercase tracking-wide hover:bg-black/5 transition"
+                className="cursor-pointer flex-1 border border-black/10 rounded-full py-3.5 text-xs font-display font-semibold uppercase tracking-wide hover:bg-black/5 transition"
               >
                 Clear
               </button>
               <button
                 type="button"
                 onClick={applyPriceFilter}
-                className="flex-1 bg-primary text-ink rounded-full py-3.5 text-xs font-display font-semibold uppercase tracking-wide hover:bg-primary-dark transition"
+                className="cursor-pointer flex-1 bg-primary text-ink rounded-full py-3.5 text-xs font-display font-semibold uppercase tracking-wide hover:bg-primary-dark transition"
               >
                 Apply Filter
               </button>

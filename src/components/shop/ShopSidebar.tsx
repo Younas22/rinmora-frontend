@@ -82,7 +82,7 @@ export default function ShopSidebar({ basePath, categories }: { basePath: string
             <button
               type="button"
               onClick={clearAllFilters}
-              className="text-[11px] font-display font-semibold uppercase tracking-wide text-black/40 hover:text-ink underline underline-offset-4 transition"
+              className="cursor-pointer text-[11px] font-display font-semibold uppercase tracking-wide text-black/40 hover:text-ink underline underline-offset-4 transition"
             >
               Clear All
             </button>
@@ -147,14 +147,14 @@ export default function ShopSidebar({ basePath, categories }: { basePath: string
           <button
             type="button"
             onClick={clearPriceFilter}
-            className="flex-1 border border-black/10 rounded-full py-2.5 text-[11px] font-display font-semibold uppercase tracking-wide hover:bg-black/5 transition"
+            className="cursor-pointer flex-1 border border-black/10 rounded-full py-2.5 text-[11px] font-display font-semibold uppercase tracking-wide hover:bg-black/5 transition"
           >
             Clear
           </button>
           <button
             type="button"
             onClick={applyPriceFilter}
-            className="flex-1 bg-primary text-ink rounded-full py-2.5 text-[11px] font-display font-semibold uppercase tracking-wide hover:bg-primary-dark transition"
+            className="cursor-pointer flex-1 bg-primary text-ink rounded-full py-2.5 text-[11px] font-display font-semibold uppercase tracking-wide hover:bg-primary-dark transition"
           >
             Apply
           </button>

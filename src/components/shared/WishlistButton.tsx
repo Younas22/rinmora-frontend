@@ -27,7 +27,7 @@ export default function WishlistButton({
       type="button"
       aria-label={active ? "Remove from wishlist" : "Add to wishlist"}
       onClick={handleClick}
-      className={className}
+      className={`cursor-pointer ${className}`}
     >
       <i className={`${active ? "fa-solid text-primary-dark" : "fa-regular"} fa-heart ${iconClassName}`} />
     </button>
