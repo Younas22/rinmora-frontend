@@ -26,7 +26,7 @@ export default function AddToCartButton({
       type="button"
       onClick={handleClick}
       disabled={disabled}
-      className={`btn-ripple ${className} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+      className={`btn-ripple ${className} ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
     >
       {children}
     </button>
