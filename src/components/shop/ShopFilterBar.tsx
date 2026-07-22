@@ -6,14 +6,23 @@ import { useCurrency } from "@/components/currency/CurrencyContext";
 
 // Base-currency bounds for the slider; only the label is converted to the
 // active display currency. The API filter params stay in base currency.
-const PRICE_MIN = 0;
-const PRICE_MAX = 1000;
+const DEFAULT_PRICE_MIN = 0;
+const DEFAULT_PRICE_MAX = 1000;
 const PRICE_STEP = 10;
 
-export default function ShopFilterBar({ basePath }: { basePath: string }) {
+export default function ShopFilterBar({
+  basePath,
+  priceBounds,
+}: {
+  basePath: string;
+  priceBounds?: { min: number; max: number };
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { formatPrice } = useCurrency();
+
+  const PRICE_MIN = priceBounds?.min ?? DEFAULT_PRICE_MIN;
+  const PRICE_MAX = priceBounds?.max ?? DEFAULT_PRICE_MAX;
 
   const urlMinPrice = searchParams.get("min_price");
   const urlMaxPrice = searchParams.get("max_price");
@@ -77,23 +86,25 @@ export default function ShopFilterBar({ basePath }: { basePath: string }) {
     setPanelOpen(false);
   };
 
-  const minPercent = ((draftMin - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100;
-  const maxPercent = ((draftMax - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100;
+  const range = Math.max(PRICE_MAX - PRICE_MIN, 1);
+  const minPercent = ((draftMin - PRICE_MIN) / range) * 100;
+  const maxPercent = ((draftMax - PRICE_MIN) / range) * 100;
 
   return (
-    <div>
+    <div className="w-full">
       <button
         type="button"
         onClick={openPanel}
-        className="relative inline-flex items-center gap-2 border border-black/10 rounded-full pl-5 pr-5 py-2.5 text-xs font-display font-semibold uppercase tracking-wide hover:bg-black/5 transition"
+        className="cursor-pointer relative w-full flex items-center gap-3 bg-white border border-black/10 rounded-2xl px-4 py-3.5 text-sm font-display font-semibold hover:bg-black/[0.03] transition"
       >
-        <i className="fa-solid fa-sliders text-[11px]" />
-        Price Filter
-        {priceFilterActive && (
-          <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary-dark grid place-items-center">
-            <span className="w-1.5 h-1.5 rounded-full bg-white" />
-          </span>
-        )}
+        <span className="w-8 h-8 rounded-full bg-primary/20 grid place-items-center shrink-0">
+          <i className="fa-solid fa-sliders text-[12px] text-primary-dark" />
+        </span>
+        <span className="flex-1 text-left">
+          {priceFilterActive ? `${formatPrice(urlMin)} – ${formatPrice(urlMax)}` : "Filter by Price"}
+        </span>
+        {priceFilterActive && <span className="w-2 h-2 rounded-full bg-primary-dark shrink-0" />}
+        <i className="fa-solid fa-chevron-right text-[11px] text-black/30 shrink-0" />
       </button>
 
       {priceFilterActive && (
@@ -115,7 +126,8 @@ export default function ShopFilterBar({ basePath }: { basePath: string }) {
       {panelOpen && (
         <div className="fixed inset-0 z-50 flex items-end">
           <div className="absolute inset-0 bg-black/40" onClick={() => setPanelOpen(false)} />
-          <div className="relative bg-white w-full rounded-t-4xl max-h-[85vh] overflow-y-auto p-6 shadow-soft animate-slide-up">
+          <div className="relative bg-white w-full rounded-t-4xl max-h-[85vh] overflow-y-auto p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-soft animate-slide-up">
+            <div className="w-10 h-1.5 rounded-full bg-black/10 mx-auto mb-4 sm:hidden" />
             <div className="flex items-center justify-between mb-2">
               <h2 className="font-display text-lg font-semibold">Filter by Price</h2>
               <button
@@ -133,7 +145,7 @@ export default function ShopFilterBar({ basePath }: { basePath: string }) {
               {formatPrice(draftMin)} <span className="text-black/30">–</span> {formatPrice(draftMax)}
             </p>
 
-            <div className="range-slider relative h-1.5 mb-9 mx-1.5">
+            <div className="range-slider relative h-1.5 mb-3 mx-1.5">
               <div className="absolute inset-0 rounded-full bg-black/10" />
               <div
                 className="absolute h-full rounded-full bg-primary-dark"
@@ -159,6 +171,11 @@ export default function ShopFilterBar({ basePath }: { basePath: string }) {
                 aria-label="Maximum price"
                 style={{ zIndex: 4 }}
               />
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] text-black/35 mb-9">
+              <span>{formatPrice(PRICE_MIN)}</span>
+              <span>{formatPrice(PRICE_MAX)}</span>
             </div>
 
             <div className="flex gap-3">

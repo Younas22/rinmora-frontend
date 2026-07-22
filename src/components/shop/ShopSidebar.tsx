@@ -8,14 +8,25 @@ import type { Category } from "@/types/storefront";
 
 // Base-currency bounds for the slider; only the label is converted to the
 // active display currency. The API filter params stay in base currency.
-const PRICE_MIN = 0;
-const PRICE_MAX = 1000;
+const DEFAULT_PRICE_MIN = 0;
+const DEFAULT_PRICE_MAX = 1000;
 const PRICE_STEP = 10;
 
-export default function ShopSidebar({ basePath, categories }: { basePath: string; categories: Category[] }) {
+export default function ShopSidebar({
+  basePath,
+  categories,
+  priceBounds,
+}: {
+  basePath: string;
+  categories: Category[];
+  priceBounds?: { min: number; max: number };
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { formatPrice } = useCurrency();
+
+  const PRICE_MIN = priceBounds?.min ?? DEFAULT_PRICE_MIN;
+  const PRICE_MAX = priceBounds?.max ?? DEFAULT_PRICE_MAX;
 
   const currentCategory = searchParams.get("category") ?? "";
   const urlMinPrice = searchParams.get("min_price");

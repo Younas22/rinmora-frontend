@@ -108,6 +108,10 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Paginat
   return apiGet<Paginated<Product>>(`/storefront/products?${params.toString()}`);
 }
 
+export async function getPriceRange(): Promise<{ min: number; max: number }> {
+  return apiGet<{ min: number; max: number }>("/storefront/products/price-range");
+}
+
 export async function getProductBySlug(slug: string, reviewsPage = 1): Promise<ProductDetailPayload | null> {
   const res = await fetch(`${API_URL}/storefront/products/${slug}?reviews_page=${reviewsPage}`, {
     cache: "no-store",

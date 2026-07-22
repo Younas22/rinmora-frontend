@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getCategories, getProducts } from "@/lib/api";
+import { getCategories, getPriceRange, getProducts } from "@/lib/api";
 import CategoryChips from "@/components/shop/CategoryChips";
 import ShopFilterBar from "@/components/shop/ShopFilterBar";
 import ShopSidebar from "@/components/shop/ShopSidebar";
@@ -30,10 +30,16 @@ export default async function ShopPage({
   const maxPrice = typeof params.max_price === "string" ? Number(params.max_price) : undefined;
   const page = typeof params.page === "string" ? Math.max(1, Number(params.page) || 1) : 1;
 
-  const [categories, products] = await Promise.all([
+  const [categories, products, priceRange] = await Promise.all([
     getCategories(),
     getProducts({ category, sort, min_price: minPrice, max_price: maxPrice, page, per_page: 12 }),
+    getPriceRange().catch(() => ({ min: 0, max: 1000 })),
   ]);
+
+  const priceBounds = {
+    min: Math.max(0, Math.floor(priceRange.min / 10) * 10),
+    max: Math.max(Math.ceil(priceRange.max / 10) * 10, Math.floor(priceRange.min / 10) * 10 + 10),
+  };
 
   const buildHref = (targetPage: number) => {
     const p = new URLSearchParams();
@@ -67,11 +73,11 @@ export default async function ShopPage({
 
       <section className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 pb-16 md:pb-24">
         <div className="lg:grid lg:grid-cols-[260px_1fr] lg:gap-10 lg:items-start">
-          <ShopSidebar basePath="/shop" categories={categories} />
+          <ShopSidebar basePath="/shop" categories={categories} priceBounds={priceBounds} />
 
           <div>
             <div className="mb-6 lg:hidden">
-              <ShopFilterBar basePath="/shop" />
+              <ShopFilterBar basePath="/shop" priceBounds={priceBounds} />
             </div>
 
             <div className="mb-8 flex items-center justify-between gap-4 flex-wrap">

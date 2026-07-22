@@ -68,7 +68,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
         <AddToCartButton
           disabled={product.stock_status === "Out of Stock"}
-          className="mt-2 w-full bg-ink text-white text-xs font-display font-semibold tracking-wide uppercase py-3 rounded-full hover:bg-black/80 transition"
+          className="mt-2 w-full bg-ink text-white text-[11px] sm:text-xs font-display font-semibold tracking-normal sm:tracking-wide uppercase py-3.5 rounded-full hover:bg-black/80 transition"
           onAdd={() =>
             addItem({
               productId: product.id,
