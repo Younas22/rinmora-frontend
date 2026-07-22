@@ -41,7 +41,7 @@ export default function PasswordField({
           type="button"
           onClick={() => setVisible((v) => !v)}
           aria-label={visible ? "Hide password" : "Show password"}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-black/35 hover:text-ink transition"
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full grid place-items-center text-black/35 hover:text-ink transition"
         >
           <i className={`fa-regular ${visible ? "fa-eye-slash" : "fa-eye"} text-sm`} />
         </button>

@@ -143,7 +143,7 @@ export default function WriteReviewForm({ productId, slug }: { productId: number
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-xs font-display font-medium text-black/50 mb-2">Your Rating</label>
-          <div className="flex gap-1 text-2xl text-primary-dark">
+          <div className="flex text-2xl text-primary-dark -ml-2">
             {[1, 2, 3, 4, 5].map((value) => (
               <button
                 key={value}
@@ -152,7 +152,7 @@ export default function WriteReviewForm({ productId, slug }: { productId: number
                 onMouseEnter={() => setHoverRating(value)}
                 onMouseLeave={() => setHoverRating(0)}
                 aria-label={`${value} star${value > 1 ? "s" : ""}`}
-                className="leading-none"
+                className="leading-none w-10 h-10 grid place-items-center"
               >
                 {(hoverRating || rating) >= value ? "★" : "☆"}
               </button>

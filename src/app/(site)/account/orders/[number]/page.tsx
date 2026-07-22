@@ -85,7 +85,7 @@ export default function AccountOrderDetailPage() {
             <h2 className="font-display font-semibold text-sm mb-4">Order Items</h2>
             <div className="space-y-4">
               {order.items.map((item, i) => (
-                <div key={i} className="flex items-center gap-3">
+                <div key={i} className="flex flex-wrap items-center gap-3">
                   <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-black/5 shrink-0">
                     <Image
                       src={item.image_url ?? `https://picsum.photos/seed/order-item-${order.order_number}-${i}/160/160`}
@@ -104,7 +104,7 @@ export default function AccountOrderDetailPage() {
                   {order.status === "delivered" && item.product_slug && (
                     <Link
                       href={`/products/${item.product_slug}#reviews`}
-                      className="text-xs font-display font-semibold uppercase tracking-wide shrink-0 whitespace-nowrap px-3 py-2 rounded-full border border-black/10 hover:bg-black/5 transition"
+                      className="text-xs font-display font-semibold uppercase tracking-wide shrink-0 whitespace-nowrap px-3 py-2 rounded-full border border-black/10 hover:bg-black/5 transition basis-full text-center sm:basis-auto sm:ml-auto"
                     >
                       {item.already_reviewed ? "Edit Review" : "Rate this product"}
                     </Link>

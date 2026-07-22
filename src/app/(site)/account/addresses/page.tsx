@@ -117,12 +117,12 @@ export default function AccountAddressesPage() {
                   {address.type}
                 </span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 -mr-2">
                 <button
                   type="button"
                   onClick={() => openEditModal(address)}
                   aria-label="Edit address"
-                  className="text-black/40 hover:text-ink transition text-sm"
+                  className="w-9 h-9 rounded-full grid place-items-center text-black/40 hover:text-ink hover:bg-black/5 transition text-sm"
                 >
                   <i className="fa-solid fa-pen" />
                 </button>
@@ -130,7 +130,7 @@ export default function AccountAddressesPage() {
                   type="button"
                   onClick={() => handleDelete(address.id)}
                   aria-label="Delete address"
-                  className="text-black/40 hover:text-red-600 transition text-sm"
+                  className="w-9 h-9 rounded-full grid place-items-center text-black/40 hover:text-red-600 hover:bg-red-50 transition text-sm"
                 >
                   <i className="fa-solid fa-trash-can" />
                 </button>

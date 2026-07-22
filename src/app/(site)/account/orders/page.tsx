@@ -197,14 +197,14 @@ export default function AccountOrdersPage() {
       </div>
 
       {meta && meta.last_page > 1 && (
-        <nav aria-label="Pagination" className="flex items-center justify-center gap-2 mt-4">
+        <nav aria-label="Pagination" className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-4">
           {Array.from({ length: meta.last_page }, (_, i) => i + 1).map((p) => (
             <button
               key={p}
               type="button"
               onClick={() => setPage(p)}
               aria-current={p === meta.current_page ? "page" : undefined}
-              className={`w-10 h-10 rounded-full grid place-items-center text-sm font-display transition ${
+              className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-full grid place-items-center text-sm font-display transition ${
                 p === meta.current_page
                   ? "bg-ink text-white font-semibold"
                   : "border border-black/10 hover:bg-black/5 font-medium"

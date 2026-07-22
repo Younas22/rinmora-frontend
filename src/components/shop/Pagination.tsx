@@ -18,11 +18,11 @@ export default function Pagination({
   const visiblePages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
   return (
-    <nav aria-label="Pagination" className="flex items-center justify-center gap-2 mt-14">
+    <nav aria-label="Pagination" className="flex items-center justify-center gap-1.5 sm:gap-2 mt-14 overflow-x-auto px-2">
       <Link
         aria-label="Previous page"
         href={buildHref(Math.max(1, currentPage - 1))}
-        className={`w-10 h-10 rounded-full border border-black/10 grid place-items-center hover:bg-black/5 transition text-xs ${
+        className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-full border border-black/10 grid place-items-center hover:bg-black/5 transition text-xs ${
           currentPage === 1 ? "pointer-events-none opacity-40" : ""
         }`}
       >
@@ -34,7 +34,7 @@ export default function Pagination({
           key={page}
           href={buildHref(page)}
           aria-current={page === currentPage ? "page" : undefined}
-          className={`w-10 h-10 rounded-full grid place-items-center text-sm font-display transition ${
+          className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-full grid place-items-center text-sm font-display transition ${
             page === currentPage
               ? "bg-ink text-white font-semibold"
               : "border border-black/10 hover:bg-black/5 font-medium"
@@ -47,7 +47,7 @@ export default function Pagination({
       <Link
         aria-label="Next page"
         href={buildHref(Math.min(lastPage, currentPage + 1))}
-        className={`w-10 h-10 rounded-full border border-black/10 grid place-items-center hover:bg-black/5 transition text-xs ${
+        className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-full border border-black/10 grid place-items-center hover:bg-black/5 transition text-xs ${
           currentPage === lastPage ? "pointer-events-none opacity-40" : ""
         }`}
       >

@@ -40,7 +40,7 @@ export default function ProductCard({ product }: { product: Product }) {
         )}
         <WishlistButton
           product={product}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 grid place-items-center hover:bg-primary transition"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 grid place-items-center hover:bg-primary transition"
         />
         <button
           type="button"

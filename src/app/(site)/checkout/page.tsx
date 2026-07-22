@@ -185,7 +185,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-5 md:px-8 lg:px-10 py-10 md:py-14">
+    <main className="pt-20 md:pt-28 max-w-7xl mx-auto px-5 md:px-8 lg:px-10 pb-10 md:pb-14">
       <div className="flex items-center justify-center gap-2 md:gap-4 mb-10 md:mb-14">
         <div className="flex items-center gap-2 text-black/35">
           <span className="w-7 h-7 rounded-full border border-black/15 grid place-items-center text-[11px] font-display font-medium">
